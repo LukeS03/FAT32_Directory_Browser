@@ -15,8 +15,9 @@ public class Main {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        DirectoryFileEntry testFileEntry = new DirectoryFileEntry(testBytes);
-        String testName = new String(testFileEntry.getShortFileName(), StandardCharsets.UTF_8);
-        System.out.println("Da Baby");
+        /*DirectoryFileEntry testFileEntry = new DirectoryFileEntry(testBytes);
+        String testName = new String(testFileEntry.getShortFileName(), StandardCharsets.UTF_8);*/
+        DirectoryTable rootTable = new DirectoryTable(testBytes);
+        System.out.println("Test Over");
     }
 }

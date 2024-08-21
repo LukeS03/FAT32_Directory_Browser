@@ -9,7 +9,11 @@ public enum FileAttribute {
 
     public final byte byteValue;
 
-    FileAttribute(Byte inputByte) {
+    FileAttribute(byte inputByte) {
         this.byteValue = inputByte;
+    }
+
+    public byte getValue() {
+        return this.byteValue;
     }
 }

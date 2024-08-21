@@ -6,6 +6,7 @@
 abstract class DirectoryEntry {
     byte[] bytes;
     byte[] byteBuffer;
+    boolean isLfn;
     /**
      * Construct an entry from a directory entry table using an array of 32 bytes.
      * @param bytes A 32 byte-long array from which the directory entry table is to be constructed.
@@ -14,6 +15,10 @@ abstract class DirectoryEntry {
     public DirectoryEntry(byte[] bytes) throws IllegalArgumentException {
         if(bytes.length != 32) throw new IllegalArgumentException("Parameter must be 32 bytes long.");
         else this.bytes = bytes;
+
+        //check if it has the long file name attribute.
+        if(bytes[11] == FileAttribute.LONG_FILE_NAME.getValue()) this.isLfn = true;
+        else this.isLfn = false;
     }
 
     public byte getAttribute() {
