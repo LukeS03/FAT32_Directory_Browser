@@ -5,11 +5,11 @@
  */
 public class LongFileName extends DirectoryEntry {
 
-    public LongFileName(Byte[] bytes) throws IllegalArgumentException {
+    public LongFileName(byte[] bytes) throws IllegalArgumentException {
         super(bytes);
     }
 
-    public Byte entryIndex() {return null;}
-    public Byte[] getLongFileNameBytes() {return null;}
-    public Byte getShortFileNameChecksum() {return null;}
+    public byte entryIndex() {return 0;}
+    public byte[] getLongFileNameBytes() {return null;}
+    public byte getShortFileNameChecksum() {return 0;}
 }
