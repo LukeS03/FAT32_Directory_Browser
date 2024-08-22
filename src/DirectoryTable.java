@@ -1,3 +1,5 @@
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,6 +50,10 @@ public class DirectoryTable {
         }
     }
 
+    public ArrayList<ListDirectoryEntry> getEntries() {
+        return this.listEntries;
+    }
+
     /**
      * This file represents a single entry in the table (i.e. a single Standard 8.3 Directory Entry, and it's
      * corresponding Long File Name entries.)
@@ -62,16 +68,57 @@ public class DirectoryTable {
         }
 
         public String getLongFileName() {
-            if(longFileNames.isEmpty()) return new String(fileEntry.getShortFileName(), StandardCharsets.UTF_8);
-            else return null;
+            return null;
         }
+
+        public String getShortFileName() {return new String(fileEntry.getShortFileName(), StandardCharsets.UTF_8);}
 
         public String getFileName() {return new String(fileEntry.getShortFileName(), StandardCharsets.UTF_8);}
         public String getExtension() {return new String(fileEntry.getExtension(), StandardCharsets.UTF_8);}
-        public LocalDateTime getDateTimeCreated() {return null;}
+
+        public LocalDateTime getDateTimeCreated() {
+            LocalDateTime dateTime = LocalDateTime.of(1,1,1,1,1);
+
+            byte[] dateBytes = fileEntry.getCreationDate();
+            ByteBuffer dateBuffer = ByteBuffer.allocate(2);
+            dateBuffer.put(dateBytes);
+            dateBuffer.order(ByteOrder.LITTLE_ENDIAN); //god left me unfinished
+            char dateBufferVal = dateBuffer.getChar(0);
+
+            int year  = 1980 + (char) ((dateBufferVal) >>> 9);
+            int month = (char) ((dateBufferVal & 0x1E0) >>> 5);
+            int day   = (char) (dateBufferVal & 0x1F);
+
+            dateTime = dateTime.withYear(year).withMonth(month).withDayOfMonth(day);
+
+
+            byte[] timeBytes = fileEntry.getCreationTime();
+            int hour;
+            int minute;
+            int second;
+
+            return dateTime;
+        }
         public LocalDate     getDateAccessed() {return null;}
+        public LocalDateTime getDateTimeModified() {
+            LocalDateTime modifiedDateTime;
+
+            byte[] modificationDateBytes = fileEntry.getModificationDate();
+            byte[] modificationTimeBytes = fileEntry.getModificationTime();
+
+            byte year = (byte) (modificationDateBytes[0] & 0xFE >> 1);
+            byte month;
+            byte day;
+            byte hour;
+            byte minute;
+            byte second;
+
+            return null;
+        }
         public Long          getSector() {return null;}
         public Long          getFileSize() {return null;}
-        public FileAttribute getFileAttribute() {return null;}
+        public FileAttribute getFileAttribute() {
+            return FileAttribute.fromByteValue(this.fileEntry.getAttribute());
+        }
     }
 }

@@ -15,7 +15,7 @@ public class DirectoryFileEntry extends DirectoryEntry {
     }
     public byte[] getExtension() {
         byteBuffer = new byte[3];
-        System.arraycopy(bytes, 3, byteBuffer, 0, 3);
+        System.arraycopy(bytes, 8, byteBuffer, 0, 3);
         return byteBuffer;
     }
 
@@ -24,7 +24,7 @@ public class DirectoryFileEntry extends DirectoryEntry {
     }
     public byte[] getCreationTime() {
         byteBuffer = new byte[2];
-        System.arraycopy(bytes, 14, byteBuffer, 0, 2);
+        System.arraycopy(bytes, 13, byteBuffer, 0, 2);
         return byteBuffer;
     }
     public byte[] getCreationDate() {

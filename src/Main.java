@@ -18,6 +18,10 @@ public class Main {
         /*DirectoryFileEntry testFileEntry = new DirectoryFileEntry(testBytes);
         String testName = new String(testFileEntry.getShortFileName(), StandardCharsets.UTF_8);*/
         DirectoryTable rootTable = new DirectoryTable(testBytes);
+        DirectoryTable.ListDirectoryEntry dirEntry = rootTable.getEntries().get(0);
+        System.out.println("File Name: " + dirEntry.getFileName());
+        System.out.println("Short File Name: " + dirEntry.getShortFileName());
+        System.out.println("Long File Name: " + dirEntry.getLongFileName());
         System.out.println("Test Over");
     }
 }
