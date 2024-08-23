@@ -3,6 +3,7 @@ import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class DirectoryTable {
@@ -72,33 +73,17 @@ public class DirectoryTable {
         }
 
         public String getShortFileName() {return new String(fileEntry.getShortFileName(), StandardCharsets.UTF_8);}
-
         public String getFileName() {return new String(fileEntry.getShortFileName(), StandardCharsets.UTF_8);}
         public String getExtension() {return new String(fileEntry.getExtension(), StandardCharsets.UTF_8);}
 
         public LocalDateTime getDateTimeCreated() {
+            //ToDo: placeholder code, fix this up :p
+            LocalDate date = this.getDate(DateTimeMethodSpecifier.CREATED);
             LocalDateTime dateTime = LocalDateTime.of(1,1,1,1,1);
-
-            byte[] dateBytes = fileEntry.getCreationDate();
-            ByteBuffer dateBuffer = ByteBuffer.allocate(2);
-            dateBuffer.put(dateBytes);
-            dateBuffer.order(ByteOrder.LITTLE_ENDIAN); //god left me unfinished
-            char dateBufferVal = dateBuffer.getChar(0);
-
-            int year  = 1980 + (char) ((dateBufferVal) >>> 9);
-            int month = (char) ((dateBufferVal & 0x1E0) >>> 5);
-            int day   = (char) (dateBufferVal & 0x1F);
-
-            dateTime = dateTime.withYear(year).withMonth(month).withDayOfMonth(day);
-
-
-            byte[] timeBytes = fileEntry.getCreationTime();
-            int hour;
-            int minute;
-            int second;
-
+            dateTime = dateTime.withYear(date.getYear()).withMonth(date.getMonthValue()).withDayOfMonth(date.getDayOfMonth());
             return dateTime;
         }
+
         public LocalDate     getDateAccessed() {return null;}
         public LocalDateTime getDateTimeModified() {
             return null;
@@ -116,22 +101,51 @@ public class DirectoryTable {
         public FileAttribute getFileAttribute() {
             return FileAttribute.fromByteValue(this.fileEntry.getAttribute());
         }
-    }
 
 
-    /**
-     * ToDo: Refactor this class so that the code from <code>getDateTimeCreated()</code> can be reused for other date and time
-     * methods.
-     * @param specifier
-     * @return
-     */
-    private LocalDateTime getDate(DateTimeMethodSpecifier specifier) {
-        return null;
-    }
+        /**
+         * ToDo: Refactor this class so that the code from <code>getDateTimeCreated()</code> can be reused for other date and time
+         * methods.
+         * @param specifier
+         * @return
+         */
+        private LocalDate getDate(DateTimeMethodSpecifier specifier) {
 
-    private enum DateTimeMethodSpecifier {
-        CREATED,
-        MODIFIED,
-        ACCESSED
+            LocalDate date = LocalDate.of(0,1,1);
+
+            byte[] dateBytes = switch (specifier) {
+                case CREATED -> fileEntry.getCreationDate();
+                case MODIFIED -> fileEntry.getModificationDate();
+                case ACCESSED -> fileEntry.getAccessedDate();
+            };
+
+            ByteBuffer dateBuffer = ByteBuffer.allocate(2);
+            dateBuffer.put(dateBytes);
+            dateBuffer.order(ByteOrder.LITTLE_ENDIAN); //god left me unfinished
+            char dateBufferVal = dateBuffer.getChar(0);
+
+            int year  = 1980 + (char) ((dateBufferVal) >>> 9);
+            int month = (char) ((dateBufferVal & 0x1E0) >>> 5);
+            int day   = (char) (dateBufferVal & 0x1F);
+
+            date = date.withYear(year).withMonth(month).withDayOfMonth(day);
+
+            return date;
+        }
+
+        private LocalTime getTime(DateTimeMethodSpecifier specifier) {
+            byte[] timeBytes = fileEntry.getCreationTime();
+            int hour;
+            int minute;
+            int second;
+            return null;
+        }
+
+        private enum DateTimeMethodSpecifier {
+            CREATED,
+            MODIFIED,
+            ACCESSED
+        }
+
     }
 }
