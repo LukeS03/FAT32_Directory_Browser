@@ -17,7 +17,7 @@ abstract class DirectoryEntry {
         else this.bytes = bytes;
 
         //check if it has the long file name attribute.
-        if(bytes[11] == FileAttribute.LONG_FILE_NAME.getValue()) this.isLfn = true;
+        if(bytes[11] == FileAttribute.LONG_FILE_NAME.byteValue) this.isLfn = true;
         else this.isLfn = false;
     }
 

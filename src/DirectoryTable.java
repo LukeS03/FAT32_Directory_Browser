@@ -25,7 +25,7 @@ public class DirectoryTable {
             byte[] entryBytes = new byte[32]; // buffer for current bytes
             System.arraycopy(directoryTableBytes, ptrStart, entryBytes, 0, 32);
             byte attributeByte = entryBytes[11]; //get attribute byte
-            if(attributeByte == FileAttribute.LONG_FILE_NAME.getValue()) directoryEntries.add(new LongFileName(entryBytes));
+            if(attributeByte == FileAttribute.LONG_FILE_NAME.byteValue) directoryEntries.add(new LongFileName(entryBytes));
             else directoryEntries.add(new DirectoryFileEntry(entryBytes));
         }
 
@@ -101,24 +101,37 @@ public class DirectoryTable {
         }
         public LocalDate     getDateAccessed() {return null;}
         public LocalDateTime getDateTimeModified() {
-            LocalDateTime modifiedDateTime;
-
-            byte[] modificationDateBytes = fileEntry.getModificationDate();
-            byte[] modificationTimeBytes = fileEntry.getModificationTime();
-
-            byte year = (byte) (modificationDateBytes[0] & 0xFE >> 1);
-            byte month;
-            byte day;
-            byte hour;
-            byte minute;
-            byte second;
-
             return null;
         }
-        public Long          getSector() {return null;}
+
+        public Long getCluster() {
+            ByteBuffer clusterAddressBuffer = ByteBuffer.allocate(8);
+            clusterAddressBuffer.order(ByteOrder.LITTLE_ENDIAN);
+            clusterAddressBuffer.put(0, fileEntry.getLowSectors());
+            clusterAddressBuffer.put(2, fileEntry.getHighSectors());
+            return clusterAddressBuffer.getLong(0);
+        }
+
         public Long          getFileSize() {return null;}
         public FileAttribute getFileAttribute() {
             return FileAttribute.fromByteValue(this.fileEntry.getAttribute());
         }
+    }
+
+
+    /**
+     * ToDo: Refactor this class so that the code from <code>getDateTimeCreated()</code> can be reused for other date and time
+     * methods.
+     * @param specifier
+     * @return
+     */
+    private LocalDateTime getDate(DateTimeMethodSpecifier specifier) {
+        return null;
+    }
+
+    private enum DateTimeMethodSpecifier {
+        CREATED,
+        MODIFIED,
+        ACCESSED
     }
 }
