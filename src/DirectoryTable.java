@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class DirectoryTable {
 
@@ -60,22 +61,19 @@ public class DirectoryTable {
      * corresponding Long File Name entries.)
      */
     public class ListDirectoryEntry {
-        public ArrayList<LongFileName> longFileNames;
-        public DirectoryFileEntry fileEntry;
+        private final ArrayList<LongFileName> longFileNames;
+        private final DirectoryFileEntry fileEntry;
+        private String longFileName;
 
         public ListDirectoryEntry(DirectoryFileEntry file, ArrayList<LongFileName> longFileNames) {
             this.longFileNames = longFileNames;
             this.fileEntry = file;
+            this.longFileName = longFileName;
+            parseLongFileName();
         }
 
         public String getLongFileName() {
-            if(longFileNames.isEmpty()) return null;
-            ByteBuffer lfnBytesBuffer = ByteBuffer.allocate(26 * longFileNames.size());
-            lfnBytesBuffer.order(ByteOrder.LITTLE_ENDIAN);
-            for(LongFileName l : longFileNames) {
-                lfnBytesBuffer.put(l.getLongFileNameBytes());
-            }
-            return StandardCharsets.UTF_16.decode(lfnBytesBuffer).toString();
+            return longFileName;
         }
 
         public String getFileName() {
@@ -126,6 +124,32 @@ public class DirectoryTable {
 
         public LocalDate getDateAccessed() {
             return this.getDate(DateTimeMethodSpecifier.ACCESSED);
+        }
+
+        private void parseLongFileName() {
+            if(longFileNames.isEmpty()) return; //longFileName is null if there are no LFN entries.
+
+            //create a buffer for the LFN bytes and read the LFN bytes into it.
+            ByteBuffer lfnBytesBuffer = ByteBuffer.allocate(26 * longFileNames.size());
+            lfnBytesBuffer.order(ByteOrder.LITTLE_ENDIAN);
+
+            //Has to be reversed because for some reason FAT32 likes to store LFN entries in reverse order?? Very strange.
+            //TODO: This should probably be replaced with something that reads the index of each entry, but this will do for now.
+            Collections.reverse(longFileNames);
+            for(LongFileName l : longFileNames) {
+                lfnBytesBuffer.put(l.getLongFileNameBytes());
+            }
+
+            //TODO: This is silly. If I do this manually I can construct the long file name and trim 0xFF bytes at the same time.
+            ByteBuffer charBuffer = ByteBuffer.allocate(2);
+            int reverseIndex = lfnBytesBuffer.limit()-1;
+            charBuffer.put(0, lfnBytesBuffer, reverseIndex-1, 2);
+            while(charBuffer.getChar() == 0xFFFF) {
+                charBuffer.put(0, lfnBytesBuffer, reverseIndex-1, 2);
+                reverseIndex-=2;
+            }
+            lfnBytesBuffer = lfnBytesBuffer.slice(0, reverseIndex);
+            longFileName = new String(lfnBytesBuffer.array(), StandardCharsets.UTF_16LE);
         }
 
         /**
