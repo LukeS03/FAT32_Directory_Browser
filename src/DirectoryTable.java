@@ -96,7 +96,7 @@ public class DirectoryTable {
         }
 
         public long getFileSize() {
-            ByteBuffer byteBuffer = ByteBuffer.allocate(4);
+            ByteBuffer byteBuffer = ByteBuffer.allocate(8);
             byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
             byteBuffer.put(fileEntry.getFileSize());
             return byteBuffer.getLong(0);

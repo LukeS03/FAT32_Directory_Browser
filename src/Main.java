@@ -22,12 +22,14 @@ public class Main {
             System.out.println("Short File Name: " + dirEntry.getShortFileName());
             System.out.println("Long File Name: " + dirEntry.getLongFileName());
             System.out.println("Extension: " + dirEntry.getExtension());
+            System.out.println("Attribute: " + dirEntry.getFileAttribute().attributeName);
             System.out.println("Creation Date & Time: " + dirEntry.getDateTimeCreated().toString());
-            System.out.println("Last Accessed Date: " + dirEntry.getDateAccessed().toString());
             System.out.println("Last Modified Date & Time: " + dirEntry.getDateTimeModified().toString());
+            System.out.println("Last Accessed Date: " + dirEntry.getDateAccessed().toString());
+            System.out.println("File Size: " + dirEntry.getFileSize());
             System.out.println("First Cluster Address:" + dirEntry.getCluster().toString());
-            System.out.println("Test Over");
-        }
 
+        }
+        System.out.println("Test Over");
     }
 }
