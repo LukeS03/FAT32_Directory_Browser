@@ -8,25 +8,26 @@ import java.util.Arrays;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        File theFile = new File("/home/luke/IdeaProjects/FAT32 Directory Entry Browser/testbytestring");
+        File theFile = new File("/home/luke/IdeaProjects/FAT32 Directory Entry Browser/fatTestImg/testDir.img");
         byte[] testBytes;
         try {
             testBytes = Files.readAllBytes(theFile.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        /*DirectoryFileEntry testFileEntry = new DirectoryFileEntry(testBytes);
-        String testName = new String(testFileEntry.getShortFileName(), StandardCharsets.UTF_8);*/
+
         DirectoryTable rootTable = new DirectoryTable(testBytes);
-        DirectoryTable.ListDirectoryEntry dirEntry = rootTable.getEntries().get(0);
-        System.out.println("File Name: " + dirEntry.getFileName());
-        System.out.println("Short File Name: " + dirEntry.getShortFileName());
-        System.out.println("Long File Name: " + dirEntry.getLongFileName());
-        System.out.println("Extension: " + dirEntry.getExtension());
-        System.out.println("Creation Date & Time: " + dirEntry.getDateTimeCreated().toString());
-        //System.out.println("Last Accessed Date: " + dirEntry.getDateAccessed().toString());
-        //System.out.println("Last Modified Date & Time: " + dirEntry.getDateTimeModified().toString());
-        System.out.println("First Cluster Address:" + dirEntry.getCluster().toString());
-        System.out.println("Test Over");
+        for(DirectoryTable.ListDirectoryEntry dirEntry : rootTable.getEntries()) {
+            System.out.println("\nFile Name: " + dirEntry.getFileName());
+            System.out.println("Short File Name: " + dirEntry.getShortFileName());
+            System.out.println("Long File Name: " + dirEntry.getLongFileName());
+            System.out.println("Extension: " + dirEntry.getExtension());
+            System.out.println("Creation Date & Time: " + dirEntry.getDateTimeCreated().toString());
+            System.out.println("Last Accessed Date: " + dirEntry.getDateAccessed().toString());
+            System.out.println("Last Modified Date & Time: " + dirEntry.getDateTimeModified().toString());
+            System.out.println("First Cluster Address:" + dirEntry.getCluster().toString());
+            System.out.println("Test Over");
+        }
+
     }
 }

@@ -69,25 +69,23 @@ public class DirectoryTable {
         }
 
         public String getLongFileName() {
-            return null;
+            if(longFileNames.isEmpty()) return null;
+            ByteBuffer lfnBytesBuffer = ByteBuffer.allocate(26 * longFileNames.size());
+            lfnBytesBuffer.order(ByteOrder.LITTLE_ENDIAN);
+            for(LongFileName l : longFileNames) {
+                lfnBytesBuffer.put(l.getLongFileNameBytes());
+            }
+            return StandardCharsets.UTF_16.decode(lfnBytesBuffer).toString();
+        }
+
+        public String getFileName() {
+            if(longFileNames.isEmpty()) return getShortFileName();
+            else return getLongFileName();
         }
 
         public String getShortFileName() {return new String(fileEntry.getShortFileName(), StandardCharsets.UTF_8);}
-        public String getFileName() {return new String(fileEntry.getShortFileName(), StandardCharsets.UTF_8);}
+
         public String getExtension() {return new String(fileEntry.getExtension(), StandardCharsets.UTF_8);}
-
-        public LocalDateTime getDateTimeCreated() {
-            //ToDo: placeholder code, fix this up :p
-            LocalDate date = this.getDate(DateTimeMethodSpecifier.CREATED);
-            LocalDateTime dateTime = LocalDateTime.of(1,1,1,1,1);
-            dateTime = dateTime.withYear(date.getYear()).withMonth(date.getMonthValue()).withDayOfMonth(date.getDayOfMonth());
-            return dateTime;
-        }
-
-        public LocalDate     getDateAccessed() {return null;}
-        public LocalDateTime getDateTimeModified() {
-            return null;
-        }
 
         public Long getCluster() {
             ByteBuffer clusterAddressBuffer = ByteBuffer.allocate(8);
@@ -97,15 +95,41 @@ public class DirectoryTable {
             return clusterAddressBuffer.getLong(0);
         }
 
-        public Long          getFileSize() {return null;}
+        public long getFileSize() {
+            ByteBuffer byteBuffer = ByteBuffer.allocate(4);
+            byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+            byteBuffer.put(fileEntry.getFileSize());
+            return byteBuffer.getLong(0);
+        }
+
         public FileAttribute getFileAttribute() {
             return FileAttribute.fromByteValue(this.fileEntry.getAttribute());
         }
 
+        public LocalDateTime getDateTimeCreated() {
+            LocalDate date = this.getDate(DateTimeMethodSpecifier.CREATED);
+            LocalTime time = this.getTime(DateTimeMethodSpecifier.CREATED);
+            LocalDateTime dateTime = LocalDateTime.of(1,1,1,1,1);
+            dateTime = dateTime.withYear(date.getYear()).withMonth(date.getMonthValue()).withDayOfMonth(date.getDayOfMonth());
+            dateTime = dateTime.withHour(time.getHour()).withMinute(time.getMinute()).withSecond(time.getSecond()).withNano(time.getNano());
+            return dateTime;
+        }
+
+        public LocalDateTime getDateTimeModified() {
+            LocalDate date = this.getDate(DateTimeMethodSpecifier.MODIFIED);
+            LocalTime time = this.getTime(DateTimeMethodSpecifier.MODIFIED);
+            LocalDateTime dateTime = LocalDateTime.of(1,1,1,1,1);
+            dateTime = dateTime.withYear(date.getYear()).withMonth(date.getMonthValue()).withDayOfMonth(date.getDayOfMonth());
+            dateTime = dateTime.withHour(time.getHour()).withMinute(time.getMinute()).withSecond(time.getSecond());
+            return dateTime;
+        }
+
+        public LocalDate getDateAccessed() {
+            return this.getDate(DateTimeMethodSpecifier.ACCESSED);
+        }
 
         /**
-         * ToDo: Refactor this class so that the code from <code>getDateTimeCreated()</code> can be reused for other date and time
-         * methods.
+         * Gets the date that a file was created, modified or accessed.
          * @param specifier
          * @return
          */
@@ -133,12 +157,40 @@ public class DirectoryTable {
             return date;
         }
 
+        /***
+         * Get time that a file was accessed or created
+         * @param specifier Must be CREATED or MODIFIED. FAT32 does not support time accessed, and an exception will be thrown.
+         * @return
+         */
         private LocalTime getTime(DateTimeMethodSpecifier specifier) {
-            byte[] timeBytes = fileEntry.getCreationTime();
-            int hour;
-            int minute;
-            int second;
-            return null;
+            if(specifier == DateTimeMethodSpecifier.ACCESSED) throw new IllegalArgumentException("Illegal getTime parameter. Accessed time is not stored in FAT32 format.");
+
+            byte[] timeBytes = switch (specifier) {
+                case CREATED -> fileEntry.getCreationTime();
+                case MODIFIED -> fileEntry.getModificationTime();
+                case ACCESSED -> null;
+            };
+
+            LocalTime time = LocalTime.of(0,0,0);
+
+            ByteBuffer timeBuffer = ByteBuffer.allocate(2);
+            timeBuffer.order(ByteOrder.LITTLE_ENDIAN);
+            timeBuffer.put(timeBytes);
+            char timeBufferVal = timeBuffer.getChar(0);
+
+            int hour = (char) (timeBufferVal >>> 11);
+            int minute = (char) ((timeBufferVal & 0x780) >>> 5);
+            int second = (char) ((timeBufferVal & 0x1F) * 2);
+
+            time = time.withHour(hour).withMinute(minute).withSecond(second);
+
+            if(specifier == DateTimeMethodSpecifier.CREATED) {
+                byte creationTenthSeconds = fileEntry.getCreationTenthSeconds();
+                int creationNanoSeconds = creationTenthSeconds * 100000000;
+                time = time.withNano(creationNanoSeconds);
+            }
+
+            return time;
         }
 
         private enum DateTimeMethodSpecifier {
