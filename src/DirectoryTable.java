@@ -129,8 +129,10 @@ public class DirectoryTable {
         private void parseLongFileName() {
             if(longFileNames.isEmpty()) return; //longFileName is null if there are no LFN entries.
 
+            int byteBufferLen = 26 * longFileNames.size() + 2;
+
             //create a buffer for the LFN bytes and read the LFN bytes into it.
-            ByteBuffer lfnBytesBuffer = ByteBuffer.allocate(26 * longFileNames.size());
+            ByteBuffer lfnBytesBuffer = ByteBuffer.allocate(byteBufferLen);
             lfnBytesBuffer.order(ByteOrder.LITTLE_ENDIAN);
 
             //Has to be reversed because for some reason FAT32 likes to store LFN entries in reverse order?? Very strange.
@@ -139,17 +141,22 @@ public class DirectoryTable {
             for(LongFileName l : longFileNames) {
                 lfnBytesBuffer.put(l.getLongFileNameBytes());
             }
-
-            //TODO: This is silly. If I do this manually I can construct the long file name and trim 0xFF bytes at the same time.
-            ByteBuffer charBuffer = ByteBuffer.allocate(2);
-            int reverseIndex = lfnBytesBuffer.limit()-1;
-            charBuffer.put(0, lfnBytesBuffer, reverseIndex-1, 2);
-            while(charBuffer.getChar() == 0xFFFF) {
-                charBuffer.put(0, lfnBytesBuffer, reverseIndex-1, 2);
-                reverseIndex-=2;
+            lfnBytesBuffer.rewind();
+            char[] trimmedCharBytes = new char[byteBufferLen/2];
+            int charLen = 0;
+            for(int i = 0; i <= byteBufferLen/2; i++) {
+                char charBuffer = lfnBytesBuffer.getChar();
+                if(charBuffer != 0xFF && charBuffer != 0x00) {
+                    trimmedCharBytes[i] = charBuffer;
+                    charLen++;
+                }
+                else break;
             }
-            lfnBytesBuffer = lfnBytesBuffer.slice(0, reverseIndex);
-            longFileName = new String(lfnBytesBuffer.array(), StandardCharsets.UTF_16LE);
+
+            char[] trimmedLongFileName = new char[charLen];
+            System.arraycopy(trimmedCharBytes, 0, trimmedLongFileName, 0, charLen);
+
+            longFileName = new String(trimmedLongFileName);
         }
 
         /**
