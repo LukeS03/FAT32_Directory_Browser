@@ -1,6 +1,8 @@
+package com.github.lukes03.fat32_directory_browser.fat32;
+
 /**
- * Parent class for DirectoryFileEntry and LongFileName
- * <br>This just stores a 32 byte long array representing a single entry in a DirectoryTable.
+ * Parent class for com.github.lukes03.fat32_directory_browser.fat32.DirectoryFileEntry and com.github.lukes03.fat32_directory_browser.fat32.LongFileName
+ * <br>This just stores a 32 byte long array representing a single entry in a com.github.lukes03.fat32_directory_browser.fat32.DirectoryTable.
  *
  */
 abstract class DirectoryEntry {

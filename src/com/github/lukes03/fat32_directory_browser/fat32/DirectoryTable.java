@@ -1,3 +1,5 @@
+package com.github.lukes03.fat32_directory_browser.fat32;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -68,7 +70,6 @@ public class DirectoryTable {
         public ListDirectoryEntry(DirectoryFileEntry file, ArrayList<LongFileName> longFileNames) {
             this.longFileNames = longFileNames;
             this.fileEntry = file;
-            this.longFileName = longFileName;
             parseLongFileName();
         }
 

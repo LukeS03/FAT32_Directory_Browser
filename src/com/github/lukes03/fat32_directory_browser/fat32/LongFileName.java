@@ -1,3 +1,5 @@
+package com.github.lukes03.fat32_directory_browser.fat32;
+
 /**
  * A long file name.
  *

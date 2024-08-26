@@ -1,3 +1,5 @@
+package com.github.lukes03.fat32_directory_browser.fat32;
+
 /**
  * Represents a standard '8.3' file entry.
  * <br> See <a href="https://wiki.osdev.org/FAT#Standard_8.3_format">OSDev Wiki</a>

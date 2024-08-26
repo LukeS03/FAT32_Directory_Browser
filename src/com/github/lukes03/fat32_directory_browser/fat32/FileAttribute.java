@@ -1,3 +1,5 @@
+package com.github.lukes03.fat32_directory_browser.fat32;
+
 public enum FileAttribute {
     READONLY       (((byte) 1), "READ_ONLY"),
     HIDDEN         (((byte) 2), "HIDDEN"),
