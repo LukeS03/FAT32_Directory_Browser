@@ -31,3 +31,5 @@ bin/
 /backuptestfile.img
 /TEST.TXT
 /testdisk.log
+/fatTestImg/disk.img
+/fatTestImg/

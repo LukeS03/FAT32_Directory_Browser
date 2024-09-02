@@ -23,6 +23,7 @@ abstract class DirectoryEntry {
         else this.isLfn = false;
     }
 
+
     public byte getAttribute() {
         return bytes[11];
     }
