@@ -1,7 +1,8 @@
 package com.github.lukes03.fat32_directory_browser.fat32;
 
 /**
- * Represents a standard '8.3' file entry.
+ * Used to store a raw 32 byte-long non-LFN directory table entry. Methods return raw bytes, which are then converted
+ * into more helpful usable data in DirectoryTable.ListDirectoryEntry.
  * <br> See <a href="https://wiki.osdev.org/FAT#Standard_8.3_format">OSDev Wiki</a>
  */
 public class DirectoryFileEntry extends DirectoryEntry {
@@ -24,6 +25,7 @@ public class DirectoryFileEntry extends DirectoryEntry {
     public byte getCreationTenthSeconds() {
         return bytes[13];
     }
+
     public byte[] getCreationTime() {
         byteBuffer = new byte[2];
         System.arraycopy(bytes, 14, byteBuffer, 0, 2);

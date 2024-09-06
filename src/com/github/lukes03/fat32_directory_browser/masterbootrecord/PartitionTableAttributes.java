@@ -1,5 +1,6 @@
 package com.github.lukes03.fat32_directory_browser.masterbootrecord;
 
+
 public enum PartitionTableAttributes {
     ACTIVE((byte) 0b00000010, "Active"),
     INACTIVE((byte) 0b00000000, "Inactive");

@@ -11,8 +11,16 @@ public class LongFileName extends DirectoryEntry {
         super(bytes);
     }
 
+    /**
+     * Get the index which specifies which part of the long file name this entry is.
+     * @return
+     */
     public byte entryIndex() {return bytes[0];}
 
+    /**
+     * Returns all of the bytes in the LFN entry used to store the characters for the LFN name.
+     * @return
+     */
     public byte[] getLongFileNameBytes() {
         byte[] lfnBuffer = new byte[26];
         int bytePtr = 0;
@@ -31,5 +39,9 @@ public class LongFileName extends DirectoryEntry {
         return lfnBuffer;
     }
 
+    /**
+     * Get the checksum corresponding to this LFN entry's corresponding 8.3 Standard directory table entry.
+     * @return
+     */
     public byte getShortFileNameChecksum() {return bytes[13];}
 }

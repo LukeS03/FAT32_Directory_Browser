@@ -7,8 +7,8 @@ package com.github.lukes03.fat32_directory_browser.fat32;
  */
 abstract class DirectoryEntry {
     byte[] bytes;
-    byte[] byteBuffer;
-    boolean isLfn;
+    protected byte[] byteBuffer;
+    final boolean isLfn;
     /**
      * Construct an entry from a directory entry table using an array of 32 bytes.
      * @param bytes A 32 byte-long array from which the directory entry table is to be constructed.
@@ -19,11 +19,16 @@ abstract class DirectoryEntry {
         else this.bytes = bytes;
 
         //check if it has the long file name attribute.
-        if(bytes[11] == FileAttribute.LONG_FILE_NAME.byteValue) this.isLfn = true;
+        //IntelliJ IDEA says that this can be simplified, but I think it is more concise and readable this way.
+        if (bytes[11] == FileAttribute.LONG_FILE_NAME.byteValue) this.isLfn = true;
         else this.isLfn = false;
     }
 
-
+    /**
+     * Get the attribute byte. This method is used to ascertain whether a directory table entry is a LFN or 8.3
+     * file entry.
+     * @return
+     */
     public byte getAttribute() {
         return bytes[11];
     }

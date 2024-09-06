@@ -1,6 +1,8 @@
 package com.github.lukes03.fat32_directory_browser.masterbootrecord;
 
 /***
+ * Class for encapsulating partition table entries and extracting specific bytes so that they can be converted into
+ * usable data by the PartitionTableEntry class.
  * See <a href="https://wiki.osdev.org/MBR_(x86)">osdev wiki: MBR (x86)</a>
  */
 public class PartitionTableEntryBytes {
