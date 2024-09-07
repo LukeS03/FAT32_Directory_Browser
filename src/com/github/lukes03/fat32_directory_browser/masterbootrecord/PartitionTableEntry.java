@@ -1,5 +1,8 @@
 package com.github.lukes03.fat32_directory_browser.masterbootrecord;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 /**
  * A class used to extract usable data from a partition table entry.
  */
@@ -16,7 +19,7 @@ public class PartitionTableEntry {
      * @return An integer array [Cylinder, Head, Sector].
      */
     public int[] getStartChsValues() {
-        return new int[1];
+        return getChsVals(true);
     }
 
     /**
@@ -24,7 +27,7 @@ public class PartitionTableEntry {
      * @return An integer array [Cylinder, Head, Sector].
      */
     public int[] getEndChsValues() {
-        return new int[1];
+        return getChsVals(false);
     }
 
     /**
@@ -53,6 +56,19 @@ public class PartitionTableEntry {
         if(isStart) chsBytes = bytes.getChsStartBytes();
         else chsBytes = bytes.getChsLastBytes();
 
-        return new int[1];
+        int chsBytesCombined; //convert the array of chs bytes so that they can be masked and shifted and whatnot.
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        byteBuffer.put(0, chsBytes);
+
+        chsBytesCombined = byteBuffer.getInt();
+
+        int heads     = (chsBytesCombined & 0xFF000000) >> 24;
+        int cylinders = (chsBytesCombined & 0xFC0000)   >> 18;
+        int sectors   = (chsBytesCombined & 0x3FF00)    >> 8;
+
+        int[] chsVals = {heads, cylinders, sectors};
+
+        return chsVals;
     }
 }
