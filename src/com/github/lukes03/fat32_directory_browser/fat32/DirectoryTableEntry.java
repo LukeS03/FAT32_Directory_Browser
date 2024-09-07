@@ -14,8 +14,8 @@ import java.util.Collections;
  * corresponding Long File Name entries.)
  */
 public class DirectoryTableEntry {
-    private final ArrayList<LongFileName> longFileNames;
-    private final DirectoryFileEntry fileEntry;
+    private final ArrayList<LongFileNameBytes> longFileNames;
+    private final DirectoryFileEntryBytes fileEntry;
     private String longFileName;
 
     /**
@@ -23,7 +23,7 @@ public class DirectoryTableEntry {
      * @param file The file which this table entry represents.
      * @param longFileNames The file's relevant long file name entries.
      */
-    public DirectoryTableEntry(DirectoryFileEntry file, ArrayList<LongFileName> longFileNames) {
+    public DirectoryTableEntry(DirectoryFileEntryBytes file, ArrayList<LongFileNameBytes> longFileNames) {
         this.longFileNames = longFileNames;
         this.fileEntry = file;
         parseLongFileName();
@@ -144,7 +144,7 @@ public class DirectoryTableEntry {
         //Has to be reversed because for some reason FAT32 likes to store LFN entries in reverse order?? Very strange.
         //TODO: This should probably be replaced with something that reads the index of each entry, but this will do for now.
         Collections.reverse(longFileNames);
-        for(LongFileName l : longFileNames) {
+        for(LongFileNameBytes l : longFileNames) {
             lfnBytesBuffer.put(l.getLongFileNameBytes());
         }
         lfnBytesBuffer.rewind();

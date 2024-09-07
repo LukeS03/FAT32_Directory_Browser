@@ -5,9 +5,9 @@ package com.github.lukes03.fat32_directory_browser.fat32;
  * into more helpful usable data in DirectoryTable.ListDirectoryEntry.
  * <br> See <a href="https://wiki.osdev.org/FAT#Standard_8.3_format">OSDev Wiki</a>
  */
-public class DirectoryFileEntry extends DirectoryEntry {
+public class DirectoryFileEntryBytes extends DirectoryEntryBytes {
 
-    public DirectoryFileEntry(byte[] bytes) throws IllegalArgumentException {
+    public DirectoryFileEntryBytes(byte[] bytes) throws IllegalArgumentException {
         super(bytes);
     }
 

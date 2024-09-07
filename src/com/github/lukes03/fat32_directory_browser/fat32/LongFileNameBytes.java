@@ -5,9 +5,9 @@ package com.github.lukes03.fat32_directory_browser.fat32;
  *
  * See <a href="https://wiki.osdev.org/FAT#Long_File_Names">OSDev Wiki</a>
  */
-public class LongFileName extends DirectoryEntry {
+public class LongFileNameBytes extends DirectoryEntryBytes {
 
-    public LongFileName(byte[] bytes) throws IllegalArgumentException {
+    public LongFileNameBytes(byte[] bytes) throws IllegalArgumentException {
         super(bytes);
     }
 

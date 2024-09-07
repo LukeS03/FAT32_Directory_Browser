@@ -5,7 +5,7 @@ package com.github.lukes03.fat32_directory_browser.fat32;
  * <br>This just stores a 32 byte long array representing a single entry in a com.github.lukes03.fat32_directory_browser.fat32.DirectoryTable.
  *
  */
-abstract class DirectoryEntry {
+abstract class DirectoryEntryBytes {
     byte[] bytes;
     protected byte[] byteBuffer;
     final boolean isLfn;
@@ -14,7 +14,7 @@ abstract class DirectoryEntry {
      * @param bytes A 32 byte-long array from which the directory entry table is to be constructed.
      * @throws IllegalArgumentException Exception thrown if the parameter 'bytes' is not a 32 byte long array.
      */
-    public DirectoryEntry(byte[] bytes) throws IllegalArgumentException {
+    public DirectoryEntryBytes(byte[] bytes) throws IllegalArgumentException {
         if(bytes.length != 32) throw new IllegalArgumentException("Parameter must be 32 bytes long.");
         else this.bytes = bytes;
 

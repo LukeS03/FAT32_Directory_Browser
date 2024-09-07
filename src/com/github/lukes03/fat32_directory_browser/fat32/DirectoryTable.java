@@ -1,18 +1,11 @@
 package com.github.lukes03.fat32_directory_browser.fat32;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class DirectoryTable {
 
     final int directoryEntriesCount;
-    private ArrayList<DirectoryEntry> directoryEntries; //Raw 32-byte directory table entries.
+    private ArrayList<DirectoryEntryBytes> directoryEntries; //Raw 32-byte directory table entries.
     private ArrayList<DirectoryTableEntry> listEntries;  //Used to get "human-readable" data from a SFN entry and it's associated LFN entries.
 
     /**
@@ -29,8 +22,8 @@ public class DirectoryTable {
             byte[] entryBytes = new byte[32]; // buffer for current bytes
             System.arraycopy(directoryTableBytes, ptrStart, entryBytes, 0, 32);
             byte attributeByte = entryBytes[11]; //get attribute byte
-            if(attributeByte == FileAttribute.LONG_FILE_NAME.byteValue) directoryEntries.add(new LongFileName(entryBytes));
-            else directoryEntries.add(new DirectoryFileEntry(entryBytes));
+            if(attributeByte == FileAttribute.LONG_FILE_NAME.byteValue) directoryEntries.add(new LongFileNameBytes(entryBytes));
+            else directoryEntries.add(new DirectoryFileEntryBytes(entryBytes));
         }
 
         initialiseListEntries();
@@ -41,13 +34,13 @@ public class DirectoryTable {
      */
     private void initialiseListEntries() {
         this.listEntries = new ArrayList<>();
-        ArrayList<LongFileName> lfnBuffer = new ArrayList<>();
-        for(DirectoryEntry e : directoryEntries) {
+        ArrayList<LongFileNameBytes> lfnBuffer = new ArrayList<>();
+        for(DirectoryEntryBytes e : directoryEntries) {
             if(e.isLfn) {
-                lfnBuffer.add((LongFileName) e);
+                lfnBuffer.add((LongFileNameBytes) e);
             }
             else {
-                listEntries.add(new DirectoryTableEntry((DirectoryFileEntry) e, lfnBuffer));
+                listEntries.add(new DirectoryTableEntry((DirectoryFileEntryBytes) e, lfnBuffer));
                 lfnBuffer = new ArrayList<>(); //clear LFN buffer.
 
             }
