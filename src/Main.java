@@ -1,4 +1,5 @@
 import com.github.lukes03.fat32_directory_browser.fat32.DirectoryTable;
+import com.github.lukes03.fat32_directory_browser.fat32.DirectoryTableEntry;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +18,7 @@ public class Main {
         }
 
         DirectoryTable rootTable = new DirectoryTable(testBytes);
-        for(DirectoryTable.ListDirectoryEntry dirEntry : rootTable.getEntries()) {
+        for(DirectoryTableEntry dirEntry : rootTable.getEntries()) {
             System.out.println("\nFile Name: " + dirEntry.getFileName());
             System.out.println("Short File Name: " + dirEntry.getShortFileName());
             System.out.println("Long File Name: " + dirEntry.getLongFileName());
