@@ -5,6 +5,13 @@ A FAT32 directory entry browser written in Java. Very rough and unpolished. I st
 # ToDo:
 * Properly comment my code 
 
+# Milestones
+* Read a directory table entry
+* Read a directory table
+* Load a random access image file.
+* Locate the partition table and create partition table entries.
+* Select a partition and load a directory or file from it.
+
 ## Intended Features
 * Browse directories
 * Manually set CHS values or extract them from file system image.

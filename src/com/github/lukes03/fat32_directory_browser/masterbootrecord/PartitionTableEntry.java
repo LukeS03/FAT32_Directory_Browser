@@ -35,7 +35,11 @@ public class PartitionTableEntry {
      * @return The LBA address
      */
     public long getStartLBA() {
-        return 0;
+        byte[] lbaBuf = bytes.getStartLbaAddress();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(8);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        byteBuffer.put(0, lbaBuf);
+        return byteBuffer.getLong();
     }
 
     /**

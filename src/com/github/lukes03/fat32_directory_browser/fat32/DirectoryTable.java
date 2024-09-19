@@ -42,7 +42,6 @@ public class DirectoryTable {
             else {
                 listEntries.add(new DirectoryTableEntry((DirectoryFileEntryBytes) e, lfnBuffer));
                 lfnBuffer = new ArrayList<>(); //clear LFN buffer.
-
             }
         }
     }
