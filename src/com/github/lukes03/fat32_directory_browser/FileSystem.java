@@ -23,6 +23,7 @@ public class FileSystem {
     private int blockSize = 512;
     private int partitionTableAddress = 0x1BE;
     private PartitionTableEntry currentPartition;
+    private int clusterNumber;
 
     public FileSystem(String diskImageName) throws FileNotFoundException {
         diskImage = new RandomAccessFile(diskImageName, "r");
@@ -120,9 +121,9 @@ public class FileSystem {
      * @return A DirectoryTable instance representing the 'root' directory of a class.
      */
     public DirectoryTable getRootDirectory() throws IOException {
-        //TODO: Create a class to deal with the EBR.
+        //TODO: Create a class to deal with the BPB and EBR.
 
-        //This variable points to the bytes where the EBR stores the LBA address of the root directory. This is stored
+        //This variable points to the bytes where the BPB stores the LBA address of the root directory. This is stored
         //at an offset of 0x02C bytes from the start of the EBR.
         long rootDirectoryLbaPointerBytes = getPartitionStartOffset(currentPartition) + 0x02C;
         diskImage.seek(rootDirectoryLbaPointerBytes);
@@ -136,9 +137,6 @@ public class FileSystem {
         ByteBuffer byteBuffer = ByteBuffer.allocate(8);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
         byteBuffer.put(rootDirectoryLbaBuffer);
-
-        for(int i = 0; i < 4; i++) byteBuffer.put((byte)0);
-
         long rootDirectoryLba = byteBuffer.getLong(0);
 
         DirectoryTable rootDirectory = initialiseDirectoryFromLba(rootDirectoryLba);
@@ -170,7 +168,7 @@ public class FileSystem {
      * @return
      */
     public DirectoryTable getDirectory(DirectoryTableEntry dirTableEntry) throws IOException {
-        return initialiseDirectoryFromLba((dirTableEntry.getCluster()));
+        return initialiseDirectoryFromLba(dirTableEntry.getCluster());
     }
 
     /**
@@ -179,7 +177,7 @@ public class FileSystem {
      * @return
      */
     private DirectoryTable initialiseDirectoryFromLba(long lbaAddress) throws IOException {
-        long byteOffset = lbaAddress * blockSize; // byte offset of directory.
+        long byteOffset = (getPartitionStartOffset(currentPartition)) + (lbaAddress * blockSize); // byte offset of directory.
         diskImage.seek(byteOffset);
 
         int tablePointer = 0; //amount of 32 byte chunks read, used to set offset for seek.
@@ -212,5 +210,11 @@ public class FileSystem {
         }
 
         return new DirectoryTable(dirTableBytes);
+    }
+
+    private void readPartition() {
+        /*
+        initialise partition blah blah blah
+         */
     }
 }

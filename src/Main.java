@@ -11,13 +11,14 @@ import java.nio.file.Files;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        String filePath = "/home/luke/IdeaProjects/FAT32 Directory Entry Browser/fatTestImg/disk.img";
+        String filePath = "/home/luke/IdeaProjects/FAT32 Directory Entry Browser/fatTestImg/diskimgmount.img";
         FileSystem fileSystem = null;
         try {
             fileSystem = new FileSystem(filePath);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+        fileSystem.setBlockSize(1024);
         fileSystem.setCurrentPartitionIndex(0);
         DirectoryTable root;
         try {
