@@ -19,7 +19,7 @@ public class Fat32PartitionData {
         return new String(bytes.getVolumeLabel(), StandardCharsets.UTF_8);
     }
 
-    public long getRootDirectorySector() {
+    public long getRootDirectoryCluster() {
         byte[] buffer = bytes.getRootDirectorySector();
         ByteBuffer byteBuffer = ByteBuffer.allocate(8);
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN);

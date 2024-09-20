@@ -7,12 +7,9 @@ import com.github.lukes03.fat32_directory_browser.fat32.DirectoryTableEntry;
 import com.github.lukes03.fat32_directory_browser.masterbootrecord.PartitionTableEntry;
 import com.github.lukes03.fat32_directory_browser.masterbootrecord.PartitionTableEntryBytes;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 
 /***
@@ -84,7 +81,7 @@ public class FileSystem {
         //init bpb and ebr
         byte[] partitionDataBytes = new byte[512];
         try {
-            diskImage.seek(getPartitionStartOffset(currentPartition));
+            diskImage.seek(getPartitionStartByteOffset());
             diskImage.read(partitionDataBytes, 0, 512);
             currentPartitionData = new Fat32PartitionData(new Fat32PartitionDataBytes(partitionDataBytes));
             return currentPartition;
@@ -133,46 +130,15 @@ public class FileSystem {
      * @return A DirectoryTable instance representing the 'root' directory of a class.
      */
     public DirectoryTable getRootDirectory() throws IOException {
-        //TODO: Create a class to deal with the BPB and EBR.
-
-        //This variable points to the bytes where the BPB stores the LBA address of the root directory. This is stored
-        //at an offset of 0x02C bytes from the start of the EBR.
-        currentPartitionData.getRootDirectorySector();
-        long rootDirectoryLbaPointerBytes = getPartitionStartOffset(currentPartition) + 0x02C;
-        diskImage.seek(rootDirectoryLbaPointerBytes);
-
-        //Read LBA bytes into a buffer.
-        byte[] rootDirectoryLbaBuffer = new byte[4];
-        diskImage.read(rootDirectoryLbaBuffer, 0, 4);
-
-
-        //Initialise a byte buffer to convert the extracted bytes into a long.
-        ByteBuffer byteBuffer = ByteBuffer.allocate(8);
-        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        byteBuffer.put(rootDirectoryLbaBuffer);
-        long rootDirectoryLba = byteBuffer.getLong(0);
-
-        DirectoryTable rootDirectory = initialiseDirectoryFromLba(rootDirectoryLba);
-
-        return rootDirectory;
-    }
-
-    /**
-     * Return the byte offset of a file.
-     * @param file The DirectoryTableEntry of the file whose address you want.
-     * @return The byte offset of a file from the start of it's partition.
-     */
-    public long getFileOffset(DirectoryTableEntry file) {
-        return blockSize * file.getCluster();
+        return initialiseDirectoryFromClusterNumber(currentPartitionData.getRootDirectoryCluster());
     }
 
     /**
      * Return the byte offset of the start of a partition from the first byte of a file system image.
-     * @param partition
      * @return
      */
-    public long getPartitionStartOffset(PartitionTableEntry partition) {
-        return blockSize * partition.getStartLBA();
+    public long getPartitionStartByteOffset() {
+        return blockSize * currentPartition.getStartLBA();
     }
 
     /**
@@ -181,19 +147,22 @@ public class FileSystem {
      * @return
      */
     public DirectoryTable getDirectory(DirectoryTableEntry dirTableEntry) throws IOException {
-        return initialiseDirectoryFromLba(dirTableEntry.getCluster());
+        return initialiseDirectoryFromClusterNumber(dirTableEntry.getCluster());
     }
 
     /**
-     * Initialise a directory table using the LBA address of the directory.
-     * @param lbaAddress
+     * Initialise a directory table using the sector address of the directory.
+     * @param clusterNumber
      * @return
      */
-    private DirectoryTable initialiseDirectoryFromLba(long lbaAddress) throws IOException {
-        long byteOffset = (getPartitionStartOffset(currentPartition)) + (lbaAddress * blockSize); // byte offset of directory.
-        diskImage.seek(byteOffset);
+    private DirectoryTable initialiseDirectoryFromClusterNumber(long clusterNumber) throws IOException {
 
-        int tablePointer = 0; //amount of 32 byte chunks read, used to set offset for seek.
+        /* calculate byte offset of file. */
+        long partitionByteOffset = getPartitionStartByteOffset(); // byte offset of partition.
+        long reservedSectorsByteOffset = currentPartitionData.getFirstDataSector() * currentPartitionData.getBytesPerSector();
+        long clusterByteOffset = (clusterNumber-2) * ((long) currentPartitionData.getBytesPerSector() * currentPartitionData.getSectorsPerCluster());
+        long seekOffset = partitionByteOffset + reservedSectorsByteOffset + clusterByteOffset;
+
 
         ArrayList<byte[]> byteChunkBuffer = new ArrayList<>(); // buffer for each of the 32-byte "chunks" read.
 
@@ -202,9 +171,10 @@ public class FileSystem {
         // The last entry will always be an invalid entry so we'll just quickly shave that off afterwards.
         byte[] dirTableBuffer = new byte[32];
         do {
-            diskImage.read(dirTableBuffer, tablePointer * 32, 32);
+            diskImage.seek(seekOffset);
+            diskImage.read(dirTableBuffer, 0, 32);
             byteChunkBuffer.add(dirTableBuffer);
-            tablePointer++;
+            seekOffset+=32;
         } while(dirTableBuffer[0] != 0);
 
         //Shave off the final invalid entry. That's better!
