@@ -1,5 +1,7 @@
 package com.github.lukes03.fat32_directory_browser;
 
+import com.github.lukes03.fat32_directory_browser.bpb.Fat32PartitionData;
+import com.github.lukes03.fat32_directory_browser.bpb.Fat32PartitionDataBytes;
 import com.github.lukes03.fat32_directory_browser.fat32.DirectoryTable;
 import com.github.lukes03.fat32_directory_browser.fat32.DirectoryTableEntry;
 import com.github.lukes03.fat32_directory_browser.masterbootrecord.PartitionTableEntry;
@@ -23,7 +25,7 @@ public class FileSystem {
     private int blockSize = 512;
     private int partitionTableAddress = 0x1BE;
     private PartitionTableEntry currentPartition;
-    private int clusterNumber;
+    private Fat32PartitionData currentPartitionData;
 
     public FileSystem(String diskImageName) throws FileNotFoundException {
         diskImage = new RandomAccessFile(diskImageName, "r");
@@ -78,7 +80,17 @@ public class FileSystem {
     public PartitionTableEntry setCurrentPartitionIndex(int index) throws ArrayIndexOutOfBoundsException {
         if(index >= partitions.size() || index < 0) throw new ArrayIndexOutOfBoundsException("index parameter is an invalid value.");
         currentPartition = partitions.get(index);
-        return currentPartition;
+
+        //init bpb and ebr
+        byte[] partitionDataBytes = new byte[512];
+        try {
+            diskImage.seek(getPartitionStartOffset(currentPartition));
+            diskImage.read(partitionDataBytes, 0, 512);
+            currentPartitionData = new Fat32PartitionData(new Fat32PartitionDataBytes(partitionDataBytes));
+            return currentPartition;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -125,6 +137,7 @@ public class FileSystem {
 
         //This variable points to the bytes where the BPB stores the LBA address of the root directory. This is stored
         //at an offset of 0x02C bytes from the start of the EBR.
+        currentPartitionData.getRootDirectorySector();
         long rootDirectoryLbaPointerBytes = getPartitionStartOffset(currentPartition) + 0x02C;
         diskImage.seek(rootDirectoryLbaPointerBytes);
 

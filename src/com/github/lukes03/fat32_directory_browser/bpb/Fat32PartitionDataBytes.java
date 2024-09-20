@@ -20,14 +20,42 @@ public class Fat32PartitionDataBytes {
     }
 
     public byte[] getRootDirectorySector() {
-        return new byte[0xA455]; //placeholder val :3c
+        byte[] buffer = new byte[4];
+        System.arraycopy(bytes, 0x02C, buffer, 0, 4);
+        return buffer;
     }
 
-    public byte[] getBytesPerSector() {
-        return new byte[0xA455]; //placeholder val :3c
+    public byte[] getVolumeLabel() {
+        byte[] buffer = new byte[11];
+        System.arraycopy(bytes, 0x047, buffer, 0, 11);
+        return buffer;
     }
 
     public byte getSectorsPerCluster() {
-        return 0x45; //placeholder val :3c
+        return bytes[0x0D];
     }
+
+    public byte[] getBytesPerSector() {
+        byte[] buffer = new byte[2];
+        System.arraycopy(bytes, 0x0B, buffer, 0, 2);
+        return buffer;
+    }
+
+    public byte[] getReservedSectors() {
+        byte[] buffer = new byte[2];
+        System.arraycopy(bytes, 0x0E, buffer, 0, 2);
+        return buffer;
+    }
+
+    public byte[] getSectorsPerFAT() {
+        byte[] buffer = new byte[4];
+        System.arraycopy(bytes, 0x024, buffer, 0, 4);
+        return buffer;
+    }
+
+    public byte getNumFatTables() {
+        return bytes[0x10];
+    }
+
+
 }

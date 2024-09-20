@@ -18,7 +18,6 @@ public class Main {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        fileSystem.setBlockSize(1024);
         fileSystem.setCurrentPartitionIndex(0);
         DirectoryTable root;
         try {
