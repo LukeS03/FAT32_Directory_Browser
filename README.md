@@ -1,6 +1,7 @@
 # FAT32 Directory Entry Browser
+## Overview
 This program aims to be able to browse FAT32 file-systems without having to use the eponymous File Allocation Table. This
-is based on the principle that although computers [i]can[/i] store files in discontinuous blocks, they generally prefer
+is based on the principle that although computers *can* store files in discontinuous blocks, they generally prefer
 to store them in contiguous blocks for reasons of efficiency - especially with old magnetic hard drives where fragmentation
 could be a much bigger issue than with modern SSD cards. Most file recovery software seems to rely on using file headers
 to extract files from a corrupted disk. However, this method requires those files to have a recognisable header and to
@@ -15,6 +16,7 @@ a fun and interesting project to work on. The FAT32 file system is surprisingly 
 for someone with even beginner programming knowledge to work on. It has been fun trawling through online documentation
 to construct an idea of how this file-system works and to translate that into code and to see that code work.
 
+## Background
 Why did I make this? I have a 3DS whose memory card I managed to corrupt in a very weird way. I think what happened to it
 was that I yanked out a previous memory card out of my computer while it was still being written to, so that when I put my
 3DS' memory card into my computer it started writing that data to my memory card. When I put my 3DS' memory card into 
@@ -38,7 +40,7 @@ and files themselves were still completely usable. Perhaps somewhere in the vast
 SD cards store their data in, my Pokemon saves and other data was just sitting there, obscured by a corrupted FAT
 but in contiguous data blocks.
 
-# Milestones
+## Milestones
 * Read a directory table entry
 * Read a directory table
 * Load a random access image file.
