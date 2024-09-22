@@ -15,6 +15,9 @@ import java.util.ArrayList;
 /***
  * This is the 'root class' of the software which is meant to encapsulate the program and provide methods to extract
  * files.
+ * <br>
+ * Please note that any methods for this class operate under the assumption that the data being passed to it is from the
+ * currently active partition.
  */
 public class FileSystem {
     private RandomAccessFile diskImage;
@@ -77,14 +80,17 @@ public class FileSystem {
     public PartitionTableEntry setCurrentPartitionIndex(int index) throws ArrayIndexOutOfBoundsException {
         if(index >= partitions.size() || index < 0) throw new ArrayIndexOutOfBoundsException("index parameter is an invalid value.");
         currentPartition = partitions.get(index);
+        readPartition();
+        return currentPartition;
+    }
 
+    private void readPartition() {
         //init bpb and ebr
         byte[] partitionDataBytes = new byte[512];
         try {
             diskImage.seek(getPartitionStartByteOffset());
             diskImage.read(partitionDataBytes, 0, 512);
             currentPartitionData = new Fat32PartitionData(new Fat32PartitionDataBytes(partitionDataBytes));
-            return currentPartition;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -122,10 +128,6 @@ public class FileSystem {
         this.blockSize = blockSize;
     }
 
-    public byte[] getFileBytes(DirectoryTableEntry dirTableEntry) {
-        return null;
-    }
-
     /**
      * @return A DirectoryTable instance representing the 'root' directory of a class.
      */
@@ -139,6 +141,48 @@ public class FileSystem {
      */
     public long getPartitionStartByteOffset() {
         return blockSize * currentPartition.getStartLBA();
+    }
+
+    public byte[] getFileBytes(DirectoryTableEntry dirTableEntry, int bufferSize) throws IOException {
+        //initialise some variables we'll need
+        long fileSize        = dirTableEntry.getFileSize();
+        long fileStartOffset = getSectorByteOffset(dirTableEntry.getCluster());
+        long passesRequired  = fileSize / bufferSize;
+
+
+        //round up the passes required. this is my own little pound-shop way of rounding it up lol
+        if(passesRequired == 0) passesRequired = 1;
+        if(fileSize % (passesRequired * bufferSize) != 0) passesRequired++;
+
+
+        //and of course, the buffer!
+        byte[] buffer = new byte[(int)(passesRequired * bufferSize)]; // for now this program will be unable to extract files larger than 2gb.
+        // though ngl idk if fat32 can even store files that large lol
+
+        for(int passesComplete = 0; passesComplete < passesRequired; passesComplete++) {
+            long passOffset = ((long) bufferSize * passesComplete);
+            long seekAddress = fileStartOffset + passOffset;
+            diskImage.seek(seekAddress);
+            diskImage.read(buffer, (int) passOffset, bufferSize);
+        }
+
+        byte[] trimmedBuffer = new byte[(int) fileSize];
+        System.arraycopy(buffer, 0, trimmedBuffer, 0, (int) fileSize);
+        return trimmedBuffer;
+    }
+
+    /**
+     * Get the byte offset of a cluster from the start of the current partition.
+     * @param clusterNumber
+     * @return
+     */
+    public long getSectorByteOffset(long clusterNumber) {
+        /* calculate byte offset of file. */
+        long partitionByteOffset = getPartitionStartByteOffset(); // byte offset of partition.
+        long reservedSectorsByteOffset = currentPartitionData.getFirstDataSector() * currentPartitionData.getBytesPerSector();
+        long clusterByteOffset = (clusterNumber-2) * ((long) currentPartitionData.getBytesPerSector() * currentPartitionData.getSectorsPerCluster());
+        long seekOffset = partitionByteOffset + reservedSectorsByteOffset + clusterByteOffset;
+        return seekOffset;
     }
 
     /**
@@ -156,14 +200,7 @@ public class FileSystem {
      * @return
      */
     private DirectoryTable initialiseDirectoryFromClusterNumber(long clusterNumber) throws IOException {
-
-        /* calculate byte offset of file. */
-        long partitionByteOffset = getPartitionStartByteOffset(); // byte offset of partition.
-        long reservedSectorsByteOffset = currentPartitionData.getFirstDataSector() * currentPartitionData.getBytesPerSector();
-        long clusterByteOffset = (clusterNumber-2) * ((long) currentPartitionData.getBytesPerSector() * currentPartitionData.getSectorsPerCluster());
-        long seekOffset = partitionByteOffset + reservedSectorsByteOffset + clusterByteOffset;
-
-
+        long seekOffset = getSectorByteOffset(clusterNumber);
         ArrayList<byte[]> byteChunkBuffer = new ArrayList<>(); // buffer for each of the 32-byte "chunks" read.
 
         // Read the directory table into a byte arraylist until it reaches a 32 byte "chunk" whose first byte is equal
@@ -196,9 +233,5 @@ public class FileSystem {
         return new DirectoryTable(dirTableBytes);
     }
 
-    private void readPartition() {
-        /*
-        initialise partition blah blah blah
-         */
-    }
+
 }

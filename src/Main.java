@@ -6,11 +6,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String filePath = "/home/luke/IdeaProjects/FAT32 Directory Entry Browser/fatTestImg/diskimgmount.img";
         FileSystem fileSystem = null;
         try {
@@ -26,6 +28,9 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-        root.getEntries();
+        DirectoryTableEntry fileEntry = root.getEntries().get(3);
+        byte[] txtBytes = fileSystem.getFileBytes(fileEntry, 32);
+        Path fileOutPath = Paths.get("/home/luke/IdeaProjects/FAT32 Directory Entry Browser/fatTestImg/newfile.txt");
+        Files.write(fileOutPath, txtBytes);
     }
 }
