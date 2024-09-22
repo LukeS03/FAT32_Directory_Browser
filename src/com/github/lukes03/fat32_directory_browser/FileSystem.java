@@ -169,8 +169,9 @@ public class FileSystem {
         // Read the directory table into a byte arraylist until it reaches a 32 byte "chunk" whose first byte is equal
         // to zero, indicating the end of the directory.
         // The last entry will always be an invalid entry so we'll just quickly shave that off afterwards.
-        byte[] dirTableBuffer = new byte[32];
+        byte[] dirTableBuffer;
         do {
+            dirTableBuffer = new byte[32];
             diskImage.seek(seekOffset);
             diskImage.read(dirTableBuffer, 0, 32);
             byteChunkBuffer.add(dirTableBuffer);
