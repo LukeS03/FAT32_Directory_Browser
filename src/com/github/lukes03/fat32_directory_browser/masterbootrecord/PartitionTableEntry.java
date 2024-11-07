@@ -75,4 +75,13 @@ public class PartitionTableEntry {
 
         return chsVals;
     }
+
+    /**
+     * Check if the partition is a valid partition.
+     * @return True if valid partition.
+     */
+    public boolean isValidPartition() {
+        if(this.getTotalSectors() == 0 ) return false;
+        return true;
+    }
 }

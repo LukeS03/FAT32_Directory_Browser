@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) throws IOException {
-        String filePath = "/home/luke/IdeaProjects/FAT32 Directory Entry Browser/fatTestImg/diskimgmount.img";
+        String filePath = "fatTestImg/diskimgmount.img";
         FileSystem fileSystem = null;
         try {
             fileSystem = new FileSystem(filePath);
@@ -30,7 +30,7 @@ public class Main {
 
         DirectoryTableEntry fileEntry = root.getEntries().get(3);
         byte[] txtBytes = fileSystem.getFileBytes(fileEntry, 32);
-        Path fileOutPath = Paths.get("/home/luke/IdeaProjects/FAT32 Directory Entry Browser/fatTestImg/newfile.txt");
+        Path fileOutPath = Paths.get("fatTestImg/newfile.txt");
         Files.write(fileOutPath, txtBytes);
     }
 }

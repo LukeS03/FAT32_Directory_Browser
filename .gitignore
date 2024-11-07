@@ -33,3 +33,4 @@ bin/
 /testdisk.log
 /fatTestImg/disk.img
 /fatTestImg/
+/testbytestring
