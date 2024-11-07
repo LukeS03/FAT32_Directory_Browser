@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TreeTableView fx:id="FileView" prefHeight="551.0" prefWidth="623.0">
+         <columns>
+            <TreeTableColumn prefWidth="75.0" text="C1" />
+            <TreeTableColumn prefWidth="75.0" text="C2" />
+         </columns>
+      </TreeTableView>
+   </children>
+</Pane>
