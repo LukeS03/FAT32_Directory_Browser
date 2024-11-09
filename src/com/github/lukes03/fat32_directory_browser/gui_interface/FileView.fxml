@@ -4,7 +4,7 @@
 <?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<Pane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.lukes03.fat32_directory_browser.gui_interface.FileViewController">
    <children>
       <TreeTableView fx:id="FileView" prefHeight="551.0" prefWidth="623.0">
          <columns>

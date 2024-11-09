@@ -21,8 +21,14 @@ public class App extends Application {
         FXMLLoader sceneLoader = new FXMLLoader(getClass().getResource("MainInterface.fxml"));
         Parent sceneRoot = sceneLoader.load();
         Scene scene = new Scene(sceneRoot);
-
         stage.setTitle("FAT32 Directory Browser");
+
+        Fat32Model model = new Fat32Model();
+
+        //pass stage to controller.
+        MainInterfaceController interfaceController = sceneLoader.getController();
+        interfaceController.postInitialisationSetup(stage, model);
+
         stage.setScene(scene);
         stage.show();
     }
