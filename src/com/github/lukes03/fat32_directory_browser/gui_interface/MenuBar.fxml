@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.ToggleGroup?>
+
+<MenuBar xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.lukes03.fat32_directory_browser.gui_interface.MenuBarController">
+   <menus>
+      <Menu mnemonicParsing="false" text="File">
+         <items>
+            <MenuItem mnemonicParsing="false" onAction="#File_openFileSystem" text="Open File System" />
+            <MenuItem mnemonicParsing="false" text="Extract Selected Files" />
+         </items>
+      </Menu>
+      <Menu mnemonicParsing="false" text="Partition">
+         <items>
+            <RadioMenuItem mnemonicParsing="false" text="Partition 1">
+               <toggleGroup>
+                  <ToggleGroup fx:id="PartitionSelectorRadioButtons" />
+               </toggleGroup>
+            </RadioMenuItem>
+            <RadioMenuItem mnemonicParsing="false" text="Partition 2" toggleGroup="$PartitionSelectorRadioButtons" />
+            <RadioMenuItem mnemonicParsing="false" text="Partition 3" toggleGroup="$PartitionSelectorRadioButtons" />
+            <RadioMenuItem mnemonicParsing="false" text="Partition 4" toggleGroup="$PartitionSelectorRadioButtons" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Inject Custom Partition Data" />
+         </items>
+      </Menu>
+      <Menu mnemonicParsing="false" text="Settings">
+         <items>
+            <MenuItem fx:id="Settings_FileExtractionDirectory" mnemonicParsing="false" text="File Extraction Directory" />
+         </items>
+      </Menu>
+      <Menu mnemonicParsing="false" text="Help">
+         <items>
+            <MenuItem mnemonicParsing="false" text="About FAT32 Directory Entry Browser" />
+            <MenuItem mnemonicParsing="false" text="Help" />
+         </items>
+      </Menu>
+   </menus>
+</MenuBar>
