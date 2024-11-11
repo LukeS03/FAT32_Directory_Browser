@@ -1,5 +1,6 @@
 package com.github.lukes03.fat32_directory_browser.gui_interface;
 
+import com.github.lukes03.fat32_directory_browser.gui_interface.model.Fat32Model;
 import javafx.stage.Stage;
 
 abstract class ComponentController {

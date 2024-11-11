@@ -5,6 +5,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 public class MenuBarController extends ComponentController {
 
@@ -17,6 +18,13 @@ public class MenuBarController extends ComponentController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open FAT32 file system binary image...");
         File newOpenFile = fileChooser.showOpenDialog(stage);
+        if(newOpenFile != null) {
+            try {
+                model.openNewFile(newOpenFile.getAbsolutePath());
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
     }
 }

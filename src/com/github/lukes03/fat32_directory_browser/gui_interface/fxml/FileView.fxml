@@ -6,7 +6,7 @@
 
 <Pane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.lukes03.fat32_directory_browser.gui_interface.FileViewController">
    <children>
-      <TreeTableView fx:id="FileView" prefHeight="551.0" prefWidth="623.0">
+      <TreeTableView fx:id="fileViewTable" prefHeight="551.0" prefWidth="623.0">
          <columns>
             <TreeTableColumn prefWidth="75.0" text="C1" />
             <TreeTableColumn prefWidth="75.0" text="C2" />

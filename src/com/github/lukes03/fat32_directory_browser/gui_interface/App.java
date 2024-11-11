@@ -1,5 +1,6 @@
 package com.github.lukes03.fat32_directory_browser.gui_interface;
 
+import com.github.lukes03.fat32_directory_browser.gui_interface.model.Fat32Model;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,7 +19,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        FXMLLoader sceneLoader = new FXMLLoader(getClass().getResource("MainInterface.fxml"));
+        FXMLLoader sceneLoader = new FXMLLoader(getClass().getResource("fxml/MainInterface.fxml"));
         Parent sceneRoot = sceneLoader.load();
         Scene scene = new Scene(sceneRoot);
         stage.setTitle("FAT32 Directory Browser");
