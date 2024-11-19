@@ -47,7 +47,11 @@ public class PartitionTableEntry {
      * @return Duh :p
      */
     public long getTotalSectors() {
-        return 0;
+        byte[] lbaBuf = bytes.getNumSectors();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(8);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        byteBuffer.put(0, lbaBuf);
+        return byteBuffer.getLong();
     }
 
     /**

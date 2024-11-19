@@ -11,14 +11,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Fat32Model {
+    /* RANT
+     * I don't know if it's the fact that I haven't coded much Java and don't know too much about the Java compiler
+     * or virtual machine, but OMG GETTERS AND SETTERS ARE SO GOD DAMN ANNOYING. I don't get it. Why do I want to
+     * litter my code with a million different damned getters and setters? This is silly. Why can't we have
+     * properties like C#? If getters and setters are oh-so-damned important for object orientation surely there
+     * must be a way to
+     */
+
+
     /* These are mostly internal variables but I made them properties just in case they need to be listened to. */
     private ObjectProperty<DirectoryTable> root;
     private StringProperty                 filePath;
 
     /*================================================================================================================*/
     private IntegerProperty                partitionNumber;    // Denotes which partition is currently selected so that view can be updated when a new partition is loaded.
+
     private ObjectProperty<FileSystem>     fileSystem;           // Denotes that a new file has been loaded.
+
     private BooleanProperty[]              validPartitions;    // Used for "Partitions" menu radio buttons to tell which partitions are valid.
+    public BooleanProperty[]               getValidPartitionsProperty() {return validPartitions; /*I'm 90% sure this is a bad idea. Can't you just directly change the value using the reference returned? Oh well, OO is dumb.*/}
 
     /* Note to Self...
      * Things app needs to do...
@@ -59,10 +71,10 @@ public class Fat32Model {
 
         fileSystem.setValue(new FileSystem(filePath.get()));
         ArrayList<PartitionTableEntry> partitionsData = fileSystem.getValue().getPartitions();
-        for(int i = 4; i < 4; i++) {
-            if(partitionsData.get(i).isValidPartition()) validPartitions[i].setValue(true);
-            else validPartitions[i].setValue(false);
+        for(int i = 0; i < 4; i++) {
+            validPartitions[i].setValue(partitionsData.get(i).isValidPartition());
         }
+        System.out.println("");
     }
 
     /**

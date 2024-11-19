@@ -14,5 +14,10 @@ abstract class ComponentController {
     public void postInitialisationSetup(Stage stage, Fat32Model model) {
         this.stage = stage;
         this.model = model;
+        this.postInitialisationListenerSetup();
+    }
+
+    public void postInitialisationListenerSetup() {
+
     }
 }

@@ -17,14 +17,14 @@
       </Menu>
       <Menu mnemonicParsing="false" text="Partition">
          <items>
-            <RadioMenuItem mnemonicParsing="false" text="Partition 1">
+            <RadioMenuItem id="partition1Button" fx:id="partition1Button" disable="true" mnemonicParsing="false" text="Partition 1">
                <toggleGroup>
                   <ToggleGroup fx:id="PartitionSelectorRadioButtons" />
                </toggleGroup>
             </RadioMenuItem>
-            <RadioMenuItem mnemonicParsing="false" text="Partition 2" toggleGroup="$PartitionSelectorRadioButtons" />
-            <RadioMenuItem mnemonicParsing="false" text="Partition 3" toggleGroup="$PartitionSelectorRadioButtons" />
-            <RadioMenuItem mnemonicParsing="false" text="Partition 4" toggleGroup="$PartitionSelectorRadioButtons" />
+            <RadioMenuItem id="partition2Button" fx:id="partition2Button" disable="true" mnemonicParsing="false" text="Partition 2" toggleGroup="$PartitionSelectorRadioButtons" />
+            <RadioMenuItem id="partition3Button" fx:id="partition3Button" disable="true" mnemonicParsing="false" text="Partition 3" toggleGroup="$PartitionSelectorRadioButtons" />
+            <RadioMenuItem id="partition4Button" fx:id="partition4Button" disable="true" mnemonicParsing="false" text="Partition 4" toggleGroup="$PartitionSelectorRadioButtons" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Inject Custom Partition Data" />
          </items>
