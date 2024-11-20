@@ -1,4 +1,4 @@
-package com.github.lukes03.fat32_directory_browser.fat32;
+package com.github.lukes03.fat32_directory_browser.libfat32.fat32;
 
 /**
  * Parent class for com.github.lukes03.fat32_directory_browser.fat32.DirectoryFileEntry and com.github.lukes03.fat32_directory_browser.fat32.LongFileName

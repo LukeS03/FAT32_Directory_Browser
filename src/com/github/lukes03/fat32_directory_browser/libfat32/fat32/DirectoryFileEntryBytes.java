@@ -1,4 +1,4 @@
-package com.github.lukes03.fat32_directory_browser.fat32;
+package com.github.lukes03.fat32_directory_browser.libfat32.fat32;
 
 /**
  * Used to store a raw 32 byte-long non-LFN directory table entry. Methods return raw bytes, which are then converted

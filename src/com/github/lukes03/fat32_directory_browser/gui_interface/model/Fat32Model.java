@@ -1,14 +1,16 @@
 package com.github.lukes03.fat32_directory_browser.gui_interface.model;
 
-import com.github.lukes03.fat32_directory_browser.FileSystem;
-import com.github.lukes03.fat32_directory_browser.fat32.DirectoryTable;
-import com.github.lukes03.fat32_directory_browser.masterbootrecord.PartitionTableEntry;
+import com.github.lukes03.fat32_directory_browser.libfat32.FileSystem;
+import com.github.lukes03.fat32_directory_browser.libfat32.fat32.DirectoryTable;
+import com.github.lukes03.fat32_directory_browser.libfat32.fat32.DirectoryTableEntry;
+import com.github.lukes03.fat32_directory_browser.libfat32.masterbootrecord.PartitionTableEntry;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Fat32Model {
     /* RANT
@@ -30,7 +32,7 @@ public class Fat32Model {
     private ObjectProperty<FileSystem>     fileSystem;           // Denotes that a new file has been loaded.
 
     private BooleanProperty[]              validPartitions;    // Used for "Partitions" menu radio buttons to tell which partitions are valid.
-    public BooleanProperty[]               getValidPartitionsProperty() {return validPartitions; /*I'm 90% sure this is a bad idea. Can't you just directly change the value using the reference returned? Oh well, OO is dumb.*/}
+    public BooleanProperty[]               getValidPartitionsProperty() {return validPartitions; /*I'm pretty sure this is a bad idea. Can't you just directly change the value using the reference returned? Oh well, OO is dumb.*/}
 
     /* Note to Self...
      * Things app needs to do...
@@ -75,16 +77,37 @@ public class Fat32Model {
             validPartitions[i].setValue(partitionsData.get(i).isValidPartition());
         }
         System.out.println("");
+        this.partitionNumber.set(0);
+    }
+
+    public void setNewPartition(int newPartition) {
+        partitionNumber.set(newPartition);
+        fileSystem.get().setCurrentPartitionIndex(0);
+    }
+
+    public ObservableList<FileModel> getRootDirectory() throws IOException {
+        DirectoryTable directoryTable = fileSystem.get().getRootDirectory();
+        return directoryTableToList(directoryTable);
     }
 
     /**
-     * Checks what
+     * Get the children of a directory.
      */
-    private void initNewPartition() {
-
+    public ObservableList<FileModel> getDirectoryChildren(FileModel parent) throws IOException {
+        DirectoryTable directoryTable = fileSystem.get().getDirectory(parent.getFileRecord());
+        return directoryTableToList(directoryTable);
     }
 
-    private void checkPartitions() {
+    private ObservableList<FileModel> directoryTableToList(DirectoryTable directoryTable) {
+        ArrayList<DirectoryTableEntry> directoryTableEntries = directoryTable.getEntries();
+
+        ObservableList<FileModel> returnList = FXCollections.observableArrayList();
+
+        for(DirectoryTableEntry e : directoryTableEntries) {
+            returnList.add(new FileModel(e, this));
+        }
+
+        return returnList;
 
     }
 }

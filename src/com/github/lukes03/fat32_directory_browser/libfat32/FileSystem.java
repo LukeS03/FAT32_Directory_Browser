@@ -1,11 +1,11 @@
-package com.github.lukes03.fat32_directory_browser;
+package com.github.lukes03.fat32_directory_browser.libfat32;
 
-import com.github.lukes03.fat32_directory_browser.bpb.Fat32PartitionData;
-import com.github.lukes03.fat32_directory_browser.bpb.Fat32PartitionDataBytes;
-import com.github.lukes03.fat32_directory_browser.fat32.DirectoryTable;
-import com.github.lukes03.fat32_directory_browser.fat32.DirectoryTableEntry;
-import com.github.lukes03.fat32_directory_browser.masterbootrecord.PartitionTableEntry;
-import com.github.lukes03.fat32_directory_browser.masterbootrecord.PartitionTableEntryBytes;
+import com.github.lukes03.fat32_directory_browser.libfat32.bpb.Fat32PartitionData;
+import com.github.lukes03.fat32_directory_browser.libfat32.bpb.Fat32PartitionDataBytes;
+import com.github.lukes03.fat32_directory_browser.libfat32.fat32.DirectoryTable;
+import com.github.lukes03.fat32_directory_browser.libfat32.fat32.DirectoryTableEntry;
+import com.github.lukes03.fat32_directory_browser.libfat32.masterbootrecord.PartitionTableEntry;
+import com.github.lukes03.fat32_directory_browser.libfat32.masterbootrecord.PartitionTableEntryBytes;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

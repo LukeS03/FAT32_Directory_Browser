@@ -17,13 +17,6 @@ public class MainInterfaceController extends ComponentController {
 
     /* <SETUP> -------------------------------------------------------------------------------------------------------*/
 
-    /**
-     *
-     */
-    @FXML protected void initialize() {
-        System.out.println("Initialising...");
-    }
-
     @Override
     public void postInitialisationSetup(Stage stage, Fat32Model model) {
         this.stage = stage;

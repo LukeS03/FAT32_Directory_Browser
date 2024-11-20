@@ -1,4 +1,4 @@
-package com.github.lukes03.fat32_directory_browser.bpb;
+package com.github.lukes03.fat32_directory_browser.libfat32.bpb;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

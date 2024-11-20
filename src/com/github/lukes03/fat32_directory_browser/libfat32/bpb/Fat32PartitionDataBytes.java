@@ -1,4 +1,4 @@
-package com.github.lukes03.fat32_directory_browser.bpb;
+package com.github.lukes03.fat32_directory_browser.libfat32.bpb;
 
 /**
  * Class to encapsulate the raw bytes of a FAT 32 partition's BPB and EBR.

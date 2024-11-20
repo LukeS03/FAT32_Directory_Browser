@@ -1,8 +1,7 @@
-import com.github.lukes03.fat32_directory_browser.FileSystem;
-import com.github.lukes03.fat32_directory_browser.fat32.DirectoryTable;
-import com.github.lukes03.fat32_directory_browser.fat32.DirectoryTableEntry;
+import com.github.lukes03.fat32_directory_browser.libfat32.FileSystem;
+import com.github.lukes03.fat32_directory_browser.libfat32.fat32.DirectoryTable;
+import com.github.lukes03.fat32_directory_browser.libfat32.fat32.DirectoryTableEntry;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;

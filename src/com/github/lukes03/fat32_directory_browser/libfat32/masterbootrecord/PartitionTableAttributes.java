@@ -1,4 +1,4 @@
-package com.github.lukes03.fat32_directory_browser.masterbootrecord;
+package com.github.lukes03.fat32_directory_browser.libfat32.masterbootrecord;
 
 
 public enum PartitionTableAttributes {

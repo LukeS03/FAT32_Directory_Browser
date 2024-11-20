@@ -1,4 +1,4 @@
-package com.github.lukes03.fat32_directory_browser.fat32;
+package com.github.lukes03.fat32_directory_browser.libfat32.fat32;
 
 /**
  * This enum represents the different attributes that can be assigned to a directory entry.

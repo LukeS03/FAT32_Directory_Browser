@@ -39,12 +39,12 @@ public class MenuBarController extends ComponentController {
 
     public void postInitialisationListenerSetup() {
 
-        /* SET UP THE MENU BUTTON LISTENERS. */
+        /* Set up listeners so that invalid partitions are greyed out.. */
 
         // Set up partition buttons so that invalid partitions are greyed out.
         BooleanProperty[] validPartitions = model.getValidPartitionsProperty();
 
-        //TODO: Find a way to refactor this pile of garbage.
+        //TODO: Refactor each heading into its' own method.
 
         // bruh
         validPartitions[0].addListener(new ChangeListener<Boolean>() {
@@ -70,5 +70,13 @@ public class MenuBarController extends ComponentController {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 partition4Button.setDisable(newValue);
         }});
+
+        /* Set up events for clicking the partition buttons. */
+
+
+    }
+
+    public void newPartitionSelection(int selectedPartition) {
+        this.model.setNewPartition(selectedPartition);
     }
 }

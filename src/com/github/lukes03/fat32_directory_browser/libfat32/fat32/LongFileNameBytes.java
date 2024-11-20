@@ -1,4 +1,4 @@
-package com.github.lukes03.fat32_directory_browser.fat32;
+package com.github.lukes03.fat32_directory_browser.libfat32.fat32;
 
 /**
  * A long file name.

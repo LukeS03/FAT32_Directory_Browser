@@ -1,4 +1,4 @@
-package com.github.lukes03.fat32_directory_browser.masterbootrecord;
+package com.github.lukes03.fat32_directory_browser.libfat32.masterbootrecord;
 
 /***
  * Class for encapsulating partition table entries and extracting specific bytes so that they can be converted into
