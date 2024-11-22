@@ -3,6 +3,8 @@ package com.github.lukes03.fat32_directory_browser.gui_interface;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.RadioMenuItem;
 import javafx.stage.FileChooser;
@@ -39,7 +41,9 @@ public class MenuBarController extends ComponentController {
 
     public void postInitialisationListenerSetup() {
 
-        /* Set up listeners so that invalid partitions are greyed out.. */
+        //===============================================================
+        /* Set up listeners so that invalid partitions are greyed out. */
+        //===============================================================
 
         // Set up partition buttons so that invalid partitions are greyed out.
         BooleanProperty[] validPartitions = model.getValidPartitionsProperty();
@@ -71,8 +75,37 @@ public class MenuBarController extends ComponentController {
                 partition4Button.setDisable(newValue);
         }});
 
+        //=====================================================
         /* Set up events for clicking the partition buttons. */
+        //=====================================================
 
+        partition1Button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                newPartitionSelection(0);
+            }
+        });
+
+        partition2Button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                newPartitionSelection(1);
+            }
+        });
+
+        partition3Button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                newPartitionSelection(2);
+            }
+        });
+
+        partition4Button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                newPartitionSelection(3);
+            }
+        });
 
     }
 

@@ -21,20 +21,31 @@ public class FileModel {
 
     /* === FILE NAME RELATED PROPERTIES. === */
     private StringProperty fileName; // LongFileName if exists, ShortFileName if it doesn't.
-    public StringProperty fileNameProperty() {return fileName;}
+    public String         getFileName() {return fileName.get();}
 
     private StringProperty longFileName;
+    public String          getLongFileName() {return longFileName.get();}
+
     private StringProperty shortFileName;
+    public String          getShortFileName() {return shortFileName.get();}
+
     private StringProperty extension;
+    public  String         getExtension() {
+        if(this.fileAttribute.get() == FileAttribute.DIRECTORY) return "\uD83D\uDDC0";
+        return extension.get();
+    }
 
     /* === FILE ATTRIBUTE RELATED PROPERTIES === */
     private BooleanProperty isDirectory;
+    public  Boolean         getIsDirectory() {return isDirectory.get();}
+
     private ObjectProperty<FileAttribute> fileAttribute;
     private StringProperty fileAttributeString;
 
     /* === DATA STORAGE RELATED PROPERTIES === */
     private LongProperty cluster;
     private LongProperty fileSizeBytes;
+    public  Long         getFileSizeBytes() {return fileSizeBytes.get();}
 
     /* === DATE AND TIME RELATED PROPERTIES === */
     private ObjectProperty<LocalDateTime> dateTimeCreated;
@@ -85,5 +96,17 @@ public class FileModel {
         }
 
         return children;
+    }
+
+    /**
+     * @return True if file is not a "." or ".." file, denoting a link to the current or previous directory respectively.
+     */
+    public boolean isValidDirectoryChild() {
+        switch(getShortFileName()) {
+            case ".       ", "..      ":
+                return false;
+            default:
+                return true;
+        }
     }
 }

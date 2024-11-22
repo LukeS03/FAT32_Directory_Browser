@@ -27,12 +27,13 @@ public class Fat32Model {
     private StringProperty                 filePath;
 
     /*================================================================================================================*/
-    private IntegerProperty                partitionNumber;    // Denotes which partition is currently selected so that view can be updated when a new partition is loaded.
+    private IntegerProperty partitionNumber;    // Denotes which partition is currently selected so that view can be updated when a new partition is loaded.
+    public IntegerProperty  getPartitionNumberProperty() {return partitionNumber;}
 
-    private ObjectProperty<FileSystem>     fileSystem;           // Denotes that a new file has been loaded.
+    private ObjectProperty<FileSystem> fileSystem; // Denotes that a new file has been loaded.
 
-    private BooleanProperty[]              validPartitions;    // Used for "Partitions" menu radio buttons to tell which partitions are valid.
-    public BooleanProperty[]               getValidPartitionsProperty() {return validPartitions; /*I'm pretty sure this is a bad idea. Can't you just directly change the value using the reference returned? Oh well, OO is dumb.*/}
+    private BooleanProperty[] validPartitions; // Used for "Partitions" menu radio buttons to tell which partitions are valid.
+    public BooleanProperty[]  getValidPartitionsProperty() {return validPartitions; /*I'm pretty sure this is a bad idea. Can't you just directly change the value using the reference returned? Oh well, OO is dumb.*/}
 
     /* Note to Self...
      * Things app needs to do...
@@ -77,12 +78,11 @@ public class Fat32Model {
             validPartitions[i].setValue(partitionsData.get(i).isValidPartition());
         }
         System.out.println("");
-        this.partitionNumber.set(0);
     }
 
     public void setNewPartition(int newPartition) {
+        fileSystem.get().setCurrentPartitionIndex(newPartition);
         partitionNumber.set(newPartition);
-        fileSystem.get().setCurrentPartitionIndex(0);
     }
 
     public ObservableList<FileModel> getRootDirectory() throws IOException {

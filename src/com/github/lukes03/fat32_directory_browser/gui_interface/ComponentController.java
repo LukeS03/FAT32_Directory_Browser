@@ -3,6 +3,8 @@ package com.github.lukes03.fat32_directory_browser.gui_interface;
 import com.github.lukes03.fat32_directory_browser.gui_interface.model.Fat32Model;
 import javafx.stage.Stage;
 
+import javax.swing.event.ChangeListener;
+
 abstract class ComponentController {
     protected Fat32Model model;
     protected Stage      stage;
@@ -18,6 +20,7 @@ abstract class ComponentController {
     }
 
     public void postInitialisationListenerSetup() {
-
     }
+
+
 }
