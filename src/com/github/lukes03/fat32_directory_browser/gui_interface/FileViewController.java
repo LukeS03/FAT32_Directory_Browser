@@ -36,6 +36,7 @@ public class FileViewController extends ComponentController {
         model.getPartitionNumberProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                fileViewTable.setPlaceholder(new Label("Please select a partition from the menu bar to continue..."));
                 if(newValue.intValue() != -1) loadNewPartition();
                 else fileViewTable.setRoot(null);
             }

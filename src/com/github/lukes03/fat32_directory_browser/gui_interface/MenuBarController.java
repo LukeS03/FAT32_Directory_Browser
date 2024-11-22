@@ -33,6 +33,7 @@ public class MenuBarController extends ComponentController {
         if(newOpenFile != null) {
             try {
                 model.openNewFile(newOpenFile.getAbsolutePath());
+                stage.setTitle("FAT32 Directory Browser - " + newOpenFile.getName());
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -74,6 +75,22 @@ public class MenuBarController extends ComponentController {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 partition4Button.setDisable(newValue);
         }});
+
+        //===============================================================
+        /* Unset the partition radiobuttons when a new file is opened. */
+        //===============================================================
+
+        model.getPartitionNumberProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if(newValue.intValue() == -1) {
+                    partition1Button.setSelected(false);
+                    partition2Button.setSelected(false);
+                    partition3Button.setSelected(false);
+                    partition4Button.setSelected(false);
+                }
+            }
+        });
 
         //=====================================================
         /* Set up events for clicking the partition buttons. */
