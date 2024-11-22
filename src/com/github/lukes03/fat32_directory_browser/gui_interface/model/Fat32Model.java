@@ -77,7 +77,7 @@ public class Fat32Model {
         for(int i = 0; i < 4; i++) {
             validPartitions[i].setValue(partitionsData.get(i).isValidPartition());
         }
-        System.out.println("");
+        partitionNumber.set(-1);
     }
 
     public void setNewPartition(int newPartition) {
