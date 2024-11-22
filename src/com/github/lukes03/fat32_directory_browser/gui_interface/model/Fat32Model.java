@@ -14,17 +14,24 @@ import java.util.ArrayList;
 
 public class Fat32Model {
     /* RANT
+     *
      * I don't know if it's the fact that I haven't coded much Java and don't know too much about the Java compiler
      * or virtual machine, but OMG GETTERS AND SETTERS ARE SO GOD DAMN ANNOYING. I don't get it. Why do I want to
      * litter my code with a million different damned getters and setters? This is silly. Why can't we have
-     * properties like C#? If getters and setters are oh-so-damned important for object orientation surely there
-     * must be a way to
+     * properties like C#? If getters and setters are oh-so-damned important for object orientation why can't they
+     * be implied in the same way that constructors are?
+     *
+     * TLDR: java team pls copy c# thx babe
+     *
+     * /RANT
      */
 
 
     /* These are mostly internal variables but I made them properties just in case they need to be listened to. */
     private ObjectProperty<DirectoryTable> root;
-    private StringProperty                 filePath;
+
+    private StringProperty filePath;
+    public  StringProperty getFilePathProperty() {return filePath;}
 
     /*================================================================================================================*/
     private IntegerProperty partitionNumber;    // Denotes which partition is currently selected so that view can be updated when a new partition is loaded.

@@ -21,9 +21,12 @@ public class FileViewController extends ComponentController {
 
     private TreeItem root;
 
+    private final Label noFileLoadedPlaceholderText = new Label("Please open a FAT32 File System binary image and select a partition...");
+    private final Label fileLoadedPlaceholderText   = new Label ("Please select a partition from the menu bar to continue...");
+
 
     @FXML protected void initialize() {
-        fileViewTable.setPlaceholder(new Label("Please open a FAT32 File System binary image and select a partition..."));
+        fileViewTable.setPlaceholder(noFileLoadedPlaceholderText);
         fileViewTable.setShowRoot(false);
         fileNameColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("fileName"));
         fileExtensionColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("extension"));
@@ -36,9 +39,16 @@ public class FileViewController extends ComponentController {
         model.getPartitionNumberProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                fileViewTable.setPlaceholder(new Label("Please select a partition from the menu bar to continue..."));
+                fileViewTable.setPlaceholder(fileLoadedPlaceholderText);
                 if(newValue.intValue() != -1) loadNewPartition();
                 else fileViewTable.setRoot(null);
+            }
+        });
+
+        model.getFilePathProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                fileViewTable.setPlaceholder(fileLoadedPlaceholderText);
             }
         });
 
