@@ -1,5 +1,6 @@
 package com.github.lukes03.fat32_directory_browser.gui_interface;
 
+import com.github.lukes03.fat32_directory_browser.gui_interface.model.Fat32Model;
 import com.github.lukes03.fat32_directory_browser.gui_interface.model.FileModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -35,7 +36,7 @@ public class FileViewController extends ComponentController {
     }
 
     public void postInitialisationListenerSetup() {
-        //fileViewTable.setShowRoot(false);
+        fileViewTable.setShowRoot(false);
         model.getPartitionNumberProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -70,38 +71,73 @@ public class FileViewController extends ComponentController {
         root = new TreeItem(null);
 
         for (FileModel f : rootEntries) {
-            addTreeItem(f, root);
+            root.getChildren().add(initNewTreeItem(f));
+
         }
 
         fileViewTable.setRoot(root);
 
     }
 
-    private void addTreeItem(FileModel f, TreeItem p) {
-        //initialise a silly little new tree item !!! :3c
-        TreeItem treeItem = new TreeItem(f);
 
-        if(f.getIsDirectory()) {
-            ObservableList<FileModel> childFiles = null;
+    /**
+     * Initialise a new FileModel tree item with special method overrides to load items on command and not on initialisation.
+     * <br> This code is directly derived from the example listed in the Oracle
+     * <a href="https://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/TreeItem.html">TreeItem</a> documentation.
+     *
+     * @param f
+     * @return
+     */
+    private TreeItem<FileModel> initNewTreeItem(FileModel f) {
+        return new TreeItem<FileModel>(f) {
 
-            //populate the directory with it's children.
-            //this will really need fixing in the future, this sounds like a pain in the ass if you have a
-            //big file system.
-            //TODO: fix this with the example provided by the oracle docs.
-            //TODO: Also, improve error handling. I have the feeling that this will crash the entire program if it
-            // encounters even a single mucked up directory entry. Which isn't great for a recovery software.
-            try {
-                childFiles = model.getDirectoryChildren(f);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            private boolean isLeaf;
+            private boolean isFirstTimeChildren = true;
+            private boolean isFirstTimeLeaf     = true;
+
+            //ToDo: This code will need re-jigging to deal with the fact that it will probably display empty directories
+            // as having children even after loading their children.
+
+            // Override getChildren method so that it acquires the child TreeItems only once they are needed.
+            @Override
+            public ObservableList<TreeItem<FileModel>> getChildren() {
+                // Initialise children when needed.
+                if (isFirstTimeChildren && f.getIsDirectory()) {
+                    if (f.getIsDirectory()) {
+
+                        //get a list of children files.
+                        ObservableList<FileModel> childFiles = null;
+                        try {
+                            childFiles = model.getDirectoryChildren(f);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        //initialise child files
+                        for (FileModel m : childFiles) {
+                            if (m.isValidDirectoryChild())
+                                super.getChildren().add(initNewTreeItem(m));
+                        }
+
+                        //calling this method also tells us if the tree item is a leaf or not.
+                        isLeaf = super.getChildren().isEmpty();
+                    }
+                }
+
+                if(isFirstTimeChildren) this.isFirstTimeChildren = false;
+
+                return super.getChildren();
             }
 
-            for(FileModel m : childFiles) {
-                if(m.isValidDirectoryChild())
-                    addTreeItem(m, treeItem);
+            @Override
+            public boolean isLeaf() {
+                if(isFirstTimeLeaf) {
+                    isFirstTimeLeaf = false;
+                    isLeaf = !f.getIsDirectory();
+                }
+                return isLeaf;
             }
-        }
-        p.getChildren().add(treeItem);
+        };
     }
 }
 
