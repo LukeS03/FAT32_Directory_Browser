@@ -1,5 +1,6 @@
 package com.github.lukes03.fat32_directory_browser.gui_interface;
 
+import com.github.lukes03.fat32_directory_browser.gui_interface.model.ExtractionListModel;
 import com.github.lukes03.fat32_directory_browser.gui_interface.model.Fat32Model;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,8 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
 
         Fat32Model model = new Fat32Model();
+        ExtractionListModel extractionList = new ExtractionListModel();
+
         FXMLLoader sceneLoader = new FXMLLoader(getClass().getResource("fxml/MainInterface.fxml"));
         Parent sceneRoot = sceneLoader.load();
         Scene scene = new Scene(sceneRoot);
@@ -27,7 +30,7 @@ public class App extends Application {
 
         //pass stage to controller.
         MainInterfaceController interfaceController = sceneLoader.getController();
-        interfaceController.postInitialisationSetup(stage, model);
+        interfaceController.postInitialisationSetup(stage, model, extractionList);
 
         stage.setScene(scene);
         stage.show();

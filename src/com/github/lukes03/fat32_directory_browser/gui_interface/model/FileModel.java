@@ -59,6 +59,11 @@ public class FileModel {
     /**If isDirectory == true, contains list of files contained in the directory.*/
     private ObservableList<FileModel> children = null;
 
+    /* === EXTRACTION LIST MEMBERSHIP === */
+    private BooleanProperty extractItem;
+    public Boolean getExtractItem() {return extractItem.get();}
+    public void    setExtractionItem(boolean toggle) {extractItem.set(toggle);}
+
 
 
     public FileModel(DirectoryTableEntry fileRecord, Fat32Model model) {
@@ -80,6 +85,8 @@ public class FileModel {
         dateTimeCreated = new SimpleObjectProperty<>(fileRecord.getDateTimeCreated());
         dateTimeModified = new SimpleObjectProperty<>(fileRecord.getDateTimeModified());
         dateAccessed     = new SimpleObjectProperty<>(fileRecord.getDateAccessed());
+
+        extractItem = new SimpleBooleanProperty(false);
 
     }
 

@@ -1,5 +1,6 @@
 package com.github.lukes03.fat32_directory_browser.gui_interface;
 
+import com.github.lukes03.fat32_directory_browser.gui_interface.model.ExtractionListModel;
 import com.github.lukes03.fat32_directory_browser.gui_interface.model.Fat32Model;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -18,11 +19,12 @@ public class MainInterfaceController extends ComponentController {
     /* <SETUP> -------------------------------------------------------------------------------------------------------*/
 
     @Override
-    public void postInitialisationSetup(Stage stage, Fat32Model model) {
+    public void postInitialisationSetup(Stage stage, Fat32Model model, ExtractionListModel extractionList) {
         this.stage = stage;
         this.model = model;
-        fileViewComponentController.postInitialisationSetup(stage, model);
-        menuBarComponentController.postInitialisationSetup(stage, model);
+        this.extractionList = extractionList;
+        fileViewComponentController.postInitialisationSetup(stage, model, extractionList);
+        menuBarComponentController.postInitialisationSetup(stage, model, extractionList);
     }
 
 }
