@@ -94,7 +94,7 @@ public class Fat32Model {
 
     public ObservableList<FileModel> getRootDirectory() throws IOException {
         DirectoryTable directoryTable = fileSystem.get().getRootDirectory();
-        return directoryTableToList(directoryTable);
+        return directoryTableToList(null, directoryTable);
     }
 
     /**
@@ -102,16 +102,16 @@ public class Fat32Model {
      */
     public ObservableList<FileModel> getDirectoryChildren(FileModel parent) throws IOException {
         DirectoryTable directoryTable = fileSystem.get().getDirectory(parent.getFileRecord());
-        return directoryTableToList(directoryTable);
+        return directoryTableToList(parent, directoryTable);
     }
 
-    private ObservableList<FileModel> directoryTableToList(DirectoryTable directoryTable) {
+    private ObservableList<FileModel> directoryTableToList(FileModel parent, DirectoryTable directoryTable) {
         ArrayList<DirectoryTableEntry> directoryTableEntries = directoryTable.getEntries();
 
         ObservableList<FileModel> returnList = FXCollections.observableArrayList();
 
         for(DirectoryTableEntry e : directoryTableEntries) {
-            returnList.add(new FileModel(e, this));
+            returnList.add(new FileModel(e, this, parent));
         }
 
         return returnList;

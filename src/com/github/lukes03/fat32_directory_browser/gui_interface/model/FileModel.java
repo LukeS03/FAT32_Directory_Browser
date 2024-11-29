@@ -6,8 +6,10 @@ import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
+import java.sql.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class FileModel {
     //TODO:
@@ -61,12 +63,18 @@ public class FileModel {
 
     /* === EXTRACTION LIST MEMBERSHIP === */
     private BooleanProperty extractItem;
-    public Boolean getExtractItem() {return extractItem.get();}
-    public void    setExtractionItem(boolean toggle) {extractItem.set(toggle);}
+    public BooleanProperty extractItemProperty() {return extractItem;}
+    public Boolean         isExtractItem() {return extractItem.get();}
+    public void            setExtractItem(Boolean extractItem) {this.extractItem.set(extractItem);}
+
+    // This parameter will be used to keep track of the path of the file.
+    // ToDo
+    private ArrayList<FileModel> filePath;
+    public ArrayList<FileModel> getParents() {return filePath;}
 
 
 
-    public FileModel(DirectoryTableEntry fileRecord, Fat32Model model) {
+    public FileModel(DirectoryTableEntry fileRecord, Fat32Model model, FileModel parent) {
         this.fileRecord      = fileRecord;
         this.fileSystemModel = model;
 
@@ -87,6 +95,13 @@ public class FileModel {
         dateAccessed     = new SimpleObjectProperty<>(fileRecord.getDateAccessed());
 
         extractItem = new SimpleBooleanProperty(false);
+
+
+        if(parent == null) this.filePath = new ArrayList<>();
+        else {
+            filePath = new ArrayList<>(parent.getParents());
+            filePath.add(parent);
+        }
 
     }
 

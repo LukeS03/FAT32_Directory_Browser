@@ -6,12 +6,12 @@
 
 <Pane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.lukes03.fat32_directory_browser.gui_interface.FileViewController">
    <children>
-      <TreeTableView fx:id="fileViewTable" prefHeight="551.0" prefWidth="601.0">
+      <TreeTableView fx:id="fileViewTable" editable="true" prefHeight="551.0" prefWidth="601.0">
          <columns>
-            <TreeTableColumn fx:id="fileNameColumn" editable="false" prefWidth="246.0" sortable="false" text="File Name" />
+            <TreeTableColumn fx:id="fileNameColumn" editable="false" prefWidth="246.0" text="File Name" />
             <TreeTableColumn fx:id="fileExtensionColumn" editable="false" prefWidth="153.0" sortable="false" text="File Type" />
             <TreeTableColumn fx:id="fileSizeColumn" editable="false" minWidth="5.0" prefWidth="129.0" sortable="false" text="File Size (Bytes)" />
-            <TreeTableColumn fx:id="extractColumn" editable="false" minWidth="5.0" prefWidth="72.0" sortable="false" text="Extract" />
+            <TreeTableColumn fx:id="extractColumn" minWidth="5.0" prefWidth="72.0" sortable="false" text="Extract" />
          </columns>
       </TreeTableView>
    </children>

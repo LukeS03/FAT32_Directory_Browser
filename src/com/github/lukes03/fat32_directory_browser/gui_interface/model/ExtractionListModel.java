@@ -6,6 +6,7 @@ import javafx.collections.ObservableSet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Defines the list of files to be extracted from a file.
@@ -18,7 +19,7 @@ public class ExtractionListModel {
     private ObservableSet<FileModel> extractionList;
 
     public ExtractionListModel() {
-        extractionList = FXCollections.emptyObservableSet();
+        extractionList = FXCollections.observableSet(new HashSet<>());
     }
 
     /**
@@ -32,7 +33,18 @@ public class ExtractionListModel {
         extractionList.remove(f);
     }
 
+    /**
+     * Cuts the need by nesting by combining addFile and removeFile into one method.
+     * @param f
+     * @param extractItem true = add file to extraction list, false = remove file from extraction list.
+     */
+    public void enableFileExtraction(FileModel f, boolean extractItem) {
+        if(extractItem) addFile(f);
+        else removeFile(f);
+    }
+
     public ObservableSet<FileModel> getExtractionListProperty() {return extractionList;}
 
+    public void resetExtractionList() {extractionList.clear();}
 
 }

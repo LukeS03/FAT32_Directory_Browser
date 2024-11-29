@@ -6,19 +6,18 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTreeTableCell;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 
 import java.io.IOException;
 
 public class FileViewController extends ComponentController {
     @FXML private TreeTableView<Object> fileViewTable;
-    @FXML private TreeTableColumn<FileModel, String> fileNameColumn;
-    @FXML private TreeTableColumn<FileModel, String> fileExtensionColumn;
-    @FXML private TreeTableColumn<FileModel, Long>   fileSizeColumn;
+    @FXML private TreeTableColumn<FileModel, String>  fileNameColumn;
+    @FXML private TreeTableColumn<FileModel, String>  fileExtensionColumn;
+    @FXML private TreeTableColumn<FileModel, Long>    fileSizeColumn;
+    @FXML private TreeTableColumn<FileModel, Boolean> extractColumn;
 
     private TreeItem root;
 
@@ -32,6 +31,12 @@ public class FileViewController extends ComponentController {
         fileNameColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("fileName"));
         fileExtensionColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("extension"));
         fileSizeColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("fileSizeBytes"));
+
+
+        //ToDo: Current approach to the checkbox for extracting files isn't very good. I'll probably need something stupidly complex to do this @_@
+        // Especially if I want to be able to extract directories.
+        extractColumn.setCellFactory(tc -> new CheckBoxTreeTableCell<>());
+        extractColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("extractItem"));
 
     }
 
@@ -72,7 +77,6 @@ public class FileViewController extends ComponentController {
 
         for (FileModel f : rootEntries) {
             root.getChildren().add(initNewTreeItem(f));
-
         }
 
         fileViewTable.setRoot(root);
@@ -89,14 +93,11 @@ public class FileViewController extends ComponentController {
      * @return
      */
     private TreeItem<FileModel> initNewTreeItem(FileModel f) {
-        return new TreeItem<FileModel>(f) {
+        CheckBoxTreeItem<FileModel> treeItem = new CheckBoxTreeItem<>(f) {
 
             private boolean isLeaf;
             private boolean isFirstTimeChildren = true;
             private boolean isFirstTimeLeaf     = true;
-
-            //ToDo: This code will need re-jigging to deal with the fact that it will probably display empty directories
-            // as having children even after loading their children.
 
             // Override getChildren method so that it acquires the child TreeItems only once they are needed.
             @Override
@@ -138,6 +139,23 @@ public class FileViewController extends ComponentController {
                 return isLeaf;
             }
         };
+
+        //This code is responsible for adding and removing a file from the extraction list, along with
+        //adding and removing children of directories.
+        f.extractItemProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                extractionList.enableFileExtraction(f, newValue);
+
+                if(f.getIsDirectory()) {
+                    for(TreeItem<FileModel> c : treeItem.getChildren()) {
+                        c.getValue().extractItemProperty().set(newValue);
+                    }
+                }
+            }
+        });
+
+        return treeItem;
     }
 }
 
