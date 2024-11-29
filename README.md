@@ -48,7 +48,11 @@ but in contiguous data blocks.
 5. Set up the 'About' page.
 
 I think I'll put the project on hiatus until summer or something once I reach the third milestone. This project has been
-fun but it's kinda eating into my time >_< and I need to work on my dissertation. 
+fun but it's kinda eating into my time >_< and I need to work on my dissertation. Doing this project has been really fun
+and informative though! It's been pretty fun diving through documentation to figure out how FAT32 works - I think it 
+certainly speaks to me a lot more than some of the more 'maths-y' parts of Computer Science. It's also been a great
+opportunity to learn how JavaFX works. I think I've managed to get myself a very solid grasp on how the MVC model works
+and learning about the weird quirks will be essential for designing my dissertation project.
 
 ## Intended Features
 * Browse directories
