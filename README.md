@@ -31,7 +31,7 @@ TestDisk to extract my files from the SD card.
 But when I went to extract those files from my SD card, there was a big issue: the files were corrupted and they would
 cause errors in any program I tried to put them into. Examining the raw hex bytes and comparing them to previous backup
 files I had lying around my computer, I realised that the files were the same after around ~65536 bytes before the
-corruption started. I observed this same phenomenom across several files that I was able to extract.
+corruption started. I observed this same phenomenon across several files that I was able to extract.
 
 I got reading, and I realised that the FAT32 file system used on the Nintendo 3DS' SD card is stupidly simple. I quickly
 realised that the ~65536 bytes I was able to extract corresponded to the amount of bytes that one entry in the FAT table
@@ -41,18 +41,20 @@ SD cards store their data in, my Pokemon saves and other data was just sitting t
 but in contiguous data blocks.
 
 ## Milestones
-* Read a directory table entry
-* Read a directory table
-* Load a random access image file.
-* Locate the partition table and create partition table entries.
-* Select a partition and load a directory or file from it.
+1. I need to set out and properly document my methods. A lot of the methods in the GUI part of the project lack any comments.
+2. Set the directory to which files are to be extracted
+3. Extract files noted in the extraction list to the aforementioned directory
+4. Allow users to inject their own custom 'partition data' in the event that the partition itself is corrupted.
+5. Set up the 'About' page.
+
+I think I'll put the project on hiatus until summer or something once I reach the third milestone. This project has been
+fun but it's kinda eating into my time >_< and I need to work on my dissertation. 
 
 ## Intended Features
 * Browse directories
 * Manually set CHS values or extract them from file system image.
 * Mark files to be extracted
 * Extract files using only their start cluster and their file size.
-* CLI parameters controlled by GNU getopt.
 
 ## Super duper distant hypothetical ideas
 * Search for deleted or 'orphaned' directories in a file-system image.
